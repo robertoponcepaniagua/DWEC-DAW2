@@ -19,15 +19,16 @@ retrostock/
     │   └── sessionState.js  # Closure que encapsula el estado y la caja
     └── utils/
         └── helpers.js       # Funciones auxiliares, HOFs y formateadores
+```
 
 ## 📦 Modelo de datos
 
 ```javascript
 const producto = {
-  id: "1",
+  id: 1,
   title: "Pokémon Amarilla",
-  platform: ["GAME BOY"],
-  category: ["RPG"],
+  platform: "GAME BOY",
+  category: "RPG",
   basePrice: 50.00,
   state: "usado-caja-danada",
   stock: 2
@@ -36,12 +37,23 @@ const producto = {
 
 | Propiedad | Tipo | Descripción |
 |---|---|---|
-| `id` | `string` | Identificador único |
+| `id` | `number` | Identificador único |
 | `title` | `string` | Título del videojuego |
-| `platform` | `array<string>` | Plataformas (un juego puede estar en varias, ej. PS1 y N64) |
-| `category` | `array<string>` | Categorías (un juego puede tener varias, ej. RPG y Lucha) |
+| `platform` | `string` | Plataforma en la que se juega |
+| `category` | `string` | Categoría del videojuego, para poder filtrar el catálogo |
 | `basePrice` | `number` | Precio antes de la Tabla A |
 | `state` | `string` | Estado de conservación (4 valores fijos) |
 | `stock` | `number` | Unidades disponibles |
 
-**Justificación:** `platform` y `category` son `array` porque un mismo juego puede pertenecer a varias plataformas o categorías a la vez, por lo que su filtrado usa `.includes()` en vez de `===`. `state` es `string` porque cada producto solo tiene un estado de conservación a la vez, lo que permite comparar con `===` en la Tabla A. `basePrice` y `stock` son `number` por ser usados en cálculos aritméticos. El modelo es plano, sin anidamiento
+**Justificación:** todas las propiedades son valores simples (`string` o `number`) porque cada producto tiene una única plataforma y una única categoría — no hay necesidad de modelar relaciones uno-a-muchos aquí. Esto mantiene el filtrado por categoría y la comprobación de plataformas cubiertas en el catálogo (mínimo 4 categorías distintas) como comparaciones directas con `===`, sin aplanar arrays ni usar `.includes()`. `state` usa los 4 valores exactos definidos por la Tabla A, lo que permite validarlo y usarlo como clave de un objeto de ajustes (`AJUSTE_ESTADO[state]`). `basePrice` y `stock` son `number` por participar directamente en los cálculos de la Tabla A, B y C.
+
+## 🐳 Docker
+
+- **`Dockerfile`**: imagen `node:20-alpine`, instala dependencias y arranca Vite en el puerto `5173`.
+- **`docker-compose.yml`**: levanta el contenedor, mapea el puerto `5173` y monta el código como volumen para hot reload.
+
+\`\`\`bash
+docker compose up
+\`\`\`
+
+App disponible en `http://localhost:5173`.

@@ -1,0 +1,3 @@
+// Funciones pequeñas de apoyo que se usan en varios sitios:
+// formatear precios para mostrarlos en pantalla, y funciones
+// auxiliares...
