@@ -2,27 +2,31 @@
 // formatear precios para mostrarlos en pantalla, y funciones
 // auxiliares...
 
+// IMPORTS
+import * as catalogService from "../services/catalogService";
+
 export function catalog() {
 
 
-    print("-----------Menú--------------------")
-    print("1. TODO EL CATALOGO")
-    print("2. FILTRAR POR CATEGORIA")
-    print("3. SOLO PRODUCTOS CON STOCK BAJO")
-    print("-----------------------------------")
+    console.log("-----------Menú--------------------")
+    console.log("1. TODO EL CATALOGO")
+    console.log("2. FILTRAR POR CATEGORIA")
+    console.log("3. SOLO PRODUCTOS CON STOCK BAJO")
+    console.log("-----------------------------------")
 
+    let option = parseInt(prompt("Escribre un número del 1 al 3: ")); 
 
     switch(option) {
         case 1:
-            allCatalog();
+            catalogService.allCatalog();
             break;
 
         case 2:
-            filterCategory();
+            catalogService.filterCategory();
             break;
         
         case 3:
-            lowStock();
+            catalogService.lowStock();
             break;
     }
 }
