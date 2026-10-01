@@ -8,17 +8,15 @@ DESAROLLO WEB EN ENTORNO CLIENTE - ROBERTO PONCE PANIAGUA 2DAW
 
 ```text
 retrostock/
-├── package.json             # Scripts y dependencias del proyecto
-├── README.md                # Documentación técnica
 └── src/
-    ├── main.js              # Bucle del menú principal e interacción (UD3)
     ├── data/
-    │   └── catalog.js       # Catálogo inicial de productos (UD2)
+    │   └── catalog.js
     ├── services/
-    │   ├── business.js      # Lógica de negocio pura (Tablas A, B y C)
-    │   └── sessionState.js  # Closure que encapsula el estado y la caja
+    │   ├── business.js         # Tablas A, B y C (cálculos puros)
+    │   ├── catalogService.js   # Buscar, vender, reponer (opera sobre el catálogo)
+    │   └── sessionState.js     # Closure de la sesión
     └── utils/
-        └── helpers.js       # Funciones auxiliares, HOFs y formateadores
+        └── helpers.js
 ```
 
 ## 📦 Modelo de datos
