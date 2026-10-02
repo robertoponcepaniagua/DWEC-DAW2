@@ -76,3 +76,24 @@ export function lowStock() {
 
 // FUNCIONES DEL CATALOGO ESPECIALES (BUSQUEDA, FILTRADO ETC)
 
+// BUSQUEDA DE PRODUCTO
+export function findProduct(title) {
+    // BUSCAR UN PRODUCTO POR SU TITULO
+
+    let wanted = "";
+
+    wanted = catalog.find(game => game.title.toLowerCase() === title.toLowerCase());
+
+    // SI NO ENCUENTRA TERMINA LA FUNCIÓN
+    if (!wanted) {
+        console.log("Producto no encontrado");
+        return;
+    }
+
+    console.log(wanted);
+}
+
+// REGISTRAR PRODUCTO
+export function registerSale() {
+
+}
