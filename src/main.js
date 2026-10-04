@@ -7,5 +7,5 @@ import * as business from "./services/business.js";
 import * as catalogService from "./services/catalogService.js";
 import * as sessionState from "./services/sessionState.js";
 // ----
-
+let currentCatalog = catalog;
 helpers.catalog();
