@@ -4,66 +4,85 @@
 
 // IMPORTS
 import * as catalogService from "../services/catalogService";
+import { printSessionState } from "../services/sessionState";
+
 
 export function catalog() {
-    console.log("-----------Menú--------------------");
-    console.log("1. VER CATALOGO");
-    console.log("2. BUSCAR PRODUCTO");
-    console.log("3. REGISTRAR UNA VENTA");
-    console.log("4. REPONER STOCK");
-    console.log("5. INFORME DE CAJA");
-    console.log("6. SALIR");
-    console.log("-----------------------------------");
 
-    let option = parseInt(prompt("Escribre un número del 1 al 6: ")); 
+    do {
+        console.log("-----------Menú--------------------");
+        console.log("1. VER CATALOGO");
+        console.log("2. BUSCAR PRODUCTO");
+        console.log("3. REGISTRAR UNA VENTA");
+        console.log("4. REPONER STOCK");
+        console.log("5. INFORME DE CAJA");
+        console.log("6. SALIR");
+        console.log("-----------------------------------");
 
-    switch(option) {
-        case 1:
-            subcatalog();
-            break;
+        let option = parseInt(prompt("[Menú] Escribre un número del 1 al 6: ")); 
 
-        case 2:
+        switch(option) {
+            case 1:
+                subcatalog();
+                break;
+
+            case 2:
+                let wanted = prompt("Escribe el titulo del producto que quieras");
+                catalogService.findProduct(wanted);
+                break;
             
-            break;
-        
-        case 3:
-
-            break;
-        case 4:
+            case 3:
+                catalogService.registerSale();
+                break;
+            case 4:
+                
+                break;
             
-            break;
-        
-        case 5:
-            
-            break;
-        case 6:
-            break;
-    }
-
+            case 5:
+                printSessionState();
+                break;
+            case 6:
+                break;
+        }
+    } while (option !== 6);
 }
 
 export function subcatalog() {
 
+    let option = 0;
 
-    console.log("-----------Menú--------------------");
-    console.log("1. TODO EL CATALOGO");
-    console.log("2. FILTRAR POR CATEGORIA");
-    console.log("3. SOLO PRODUCTOS CON STOCK BAJO");
-    console.log("-----------------------------------");
+    do {
+        console.log("-----------SUB-Menú--------------------");
+        console.log("1. TODO EL CATALOGO");
+        console.log("2. FILTRAR POR CATEGORIA");
+        console.log("3. SOLO PRODUCTOS CON STOCK BAJO");
+        console.log("4. VOLVER AL MENÚ");
+        console.log("5. SALIR");
+        console.log("---------------------------------------");
 
-    let option = parseInt(prompt("Escribre un número del 1 al 3: ")); 
+        option = parseInt(prompt("[SUB-MENÚ] Escribe un número del 1 al 5: ")); 
 
-    switch(option) {
-        case 1:
-            catalogService.allCatalog();
-            break;
+        switch(option) {
+            case 1:
+                catalogService.allCatalog();
+                break;
 
-        case 2:
-            catalogService.filterCategory();
-            break;
-        
-        case 3:
-            catalogService.lowStock();
-            break;
-    }
+            case 2:
+                catalogService.filterCategory();
+                break;
+            
+            case 3:
+                catalogService.lowStock();
+                break;
+            case 4:
+                console.log("IR A MENÚ");
+                catalog();
+            case 5:
+                console.log("SALIENDO...")
+                break;
+            default:
+                console.log("Opción no valida (1 al 5)");
+                break;
+        }
+    } while(option !== 5);
 }
