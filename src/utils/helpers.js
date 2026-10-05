@@ -3,11 +3,15 @@
 // auxiliares...
 
 // IMPORTS
+import { catalog } from "../data/catalog";
 import * as catalogService from "../services/catalogService";
 import { printSessionState } from "../services/sessionState";
 
 
-export function catalog() {
+let currentCatalog = [...catalog];
+
+export function Menu() {
+    let option = 0;
 
     do {
         console.log("-----------Menú--------------------");
@@ -19,36 +23,51 @@ export function catalog() {
         console.log("6. SALIR");
         console.log("-----------------------------------");
 
-        let option = parseInt(prompt("[Menú] Escribre un número del 1 al 6: ")); 
+        option = parseInt(prompt("[Menú] Escribe un número del 1 al 6: ")); 
 
         switch(option) {
             case 1:
                 subcatalog();
                 break;
 
-            case 2:
-                let wanted = prompt("Escribe el titulo del producto que quieras");
-                catalogService.findProduct(wanted);
+            case 2: {
+                let wanted = prompt("Escribe el título del producto que quieras: ");
+                catalogService.findProduct(currentCatalog, wanted);
                 break;
+            }
             
-            case 3:
-                catalogService.registerSale();
-                break;
-            case 4:
+            case 3: {
+                let id_sale = parseInt(prompt("Dime el ID del producto que has vendido: "));
+                let quantity_sale = parseInt(prompt("Dime la cantidad que has vendido: "));
                 
+                currentCatalog = catalogService.registerSale(currentCatalog, id_sale, quantity_sale);
                 break;
+            }
+
+            case 4: {
+                let id = parseInt(prompt("Dime el ID del producto que quieres añadir stock: "));
+                let quantity = parseInt(prompt("Dime la cantidad que quieres añadir: "));
+                
+                currentCatalog = catalogService.addStock(currentCatalog, id, quantity);
+                break;
+            }
             
             case 5:
                 printSessionState();
                 break;
+
             case 6:
+                console.log("Saliendo...");
+                break;
+
+            default:
+                console.log("Opción no válida (1 al 6)");
                 break;
         }
     } while (option !== 6);
 }
 
 export function subcatalog() {
-
     let option = 0;
 
     do {
@@ -64,25 +83,28 @@ export function subcatalog() {
 
         switch(option) {
             case 1:
-                catalogService.allCatalog();
+                catalogService.allCatalog(currentCatalog);
                 break;
 
             case 2:
-                catalogService.filterCategory();
+                catalogService.filterCategory(currentCatalog);
                 break;
             
             case 3:
-                catalogService.lowStock();
+                catalogService.lowStock(currentCatalog);
                 break;
+
             case 4:
-                console.log("IR A MENÚ");
-                catalog();
+                console.log("Volviendo al menú principal...");
+                return; // Volver al menú de forma limpia
+
             case 5:
-                console.log("SALIENDO...")
+                console.log("Saliendo...");
                 break;
+
             default:
-                console.log("Opción no valida (1 al 5)");
+                console.log("Opción no válida (1 al 5)");
                 break;
         }
-    } while(option !== 5);
+    } while(option !== 5 && option !== 4);
 }
