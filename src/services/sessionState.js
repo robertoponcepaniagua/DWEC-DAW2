@@ -8,19 +8,23 @@
 // ESTA FUNCIÓN DEVUELVE UN OBJETO CON 
 function makeSessionState() {
     // total facturado
-    let totalSales = 0;
+    let salesHistory = [];
     // ID PRODUCTO / UNIDADES VENDIDAS (ASÍ PODEMOS VER DE TODOS LOS PRODUCTO LO QUE SE HA VENDIDO)
     let salesByProduct = {};
 
     // ID DEL PRODUCTO PARA REGISTRAR SU VENTA, CANTIDAD, Y CUANTO VA A VENDER
     function logSale(id, quantity, amount) {
-    totalSales += amount;
-    salesByProduct[id] = (salesByProduct[id] ?? 0) + quantity;
+        salesByProduct[id] = (salesByProduct[id] ?? 0) + quantity;
+        // Guardamos la transacción en el historial
+        salesHistory.push({ id, quantity, amount });
     }
-
+    
     // LA CANTIDAD QUE HA VENDIDO EN LA SESIÓN
     function getTotalSales() {
-        return totalSales;
+        // Usando reduce sobre el historial o lista de importes
+        return salesHistory.reduce((accumulator, currentSale) => {
+            return accumulator + currentSale.amount;
+        }, 0);
     }
 
     function getSalesByProduct() {
