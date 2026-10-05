@@ -10,14 +10,14 @@ import { session } from "./sessionState";
 // ----
 
 // ---FUNCIONES DEL CATALOGO INICIAL---
-export function allCatalog() {
+export function allCatalog(currentCatalog) {
     // VER TODO EL CÁTALOGO
-    catalog.forEach(game => {
+    currentCatalog.forEach(game => {
         console.log(`[#${game.id}] ${game.title} (${game.platform}) - ${game.basePrice}€ | Stock: ${game.stock}`);
     });
 }
 
-export function filterCategory() {
+export function filterCategory(currentCatalog) {
     // FILTRAR POR CATEGORÍA
     console.log("-----------------");
     console.log("1.Categoria");
@@ -41,21 +41,21 @@ export function filterCategory() {
     switch(option) {
         case 1:
             // FILTRAR POR CATEGORÍA
-            array = catalog.filter(game => {
+            array = currentCatalog.filter(game => {
                 return game.category.toLowerCase() === search.toLowerCase();
             });
             break;
 
         case 2:
             // FILTRAR POR PLATAFORMA
-            array = catalog.filter(game => {
+            array = currentCatalog.filter(game => {
                 return game.platform.toLowerCase() === search.toLowerCase();
             });
             break;
 
         case 3:
             // FILTRAR POR ESTADO
-            array = catalog.filter(game => {
+            array = currentCatalog.filter(game => {
                 return game.state.toLowerCase() === search.toLowerCase();
             });
             break;
@@ -68,10 +68,10 @@ export function filterCategory() {
     console.log(array);
 }
 
-export function lowStock() {
+export function lowStock(currentCatalog) {
     // MOSTRAR SOLO "⚠ Stock bajo"
 
-    const array = catalog.filter(game => game.stock < 3);
+    const array = currentCatalog.filter(game => game.stock < 3);
 
     console.log(array);
 }
@@ -79,7 +79,7 @@ export function lowStock() {
 // FUNCIONES DEL CATALOGO ESPECIALES (BUSQUEDA, FILTRADO ETC)
 
 // BUSQUEDA DE PRODUCTO
-export function findProduct(title) {
+export function findProduct(currentCatalog, title) {
     // BUSCAR UN PRODUCTO POR SU TITULO
 
     if (!title) {
@@ -89,7 +89,7 @@ export function findProduct(title) {
 
     let wanted = "";
 
-    wanted = catalog.find(game => game.title.toLowerCase() === title.toLowerCase());
+    wanted = currentCatalog.find(game => game.title.toLowerCase() === title.toLowerCase());
 
     // SI NO ENCUENTRA TERMINA LA FUNCIÓN
     if (!wanted) {
@@ -101,16 +101,16 @@ export function findProduct(title) {
 }
 
 // REGISTRAR PRODUCTO
-export function registerSale(currentCatalog, id, quantity) {
+export function registerSale(currentCatalog,id, quantity) {
+    // 1. Validar la cantidad ANTES de recorrer el catálogo
+    if (quantity <= 0) {
+        console.log(`Cantidad no válida: ${quantity}`);
+        return currentCatalog; // Devolvemos el catálogo sin modificar
+    }
 
-
-    // currentCatalog es por la inmutabilidad, id para buscar y el quantity la cantidad
-
-    // .map recorre el array elemento por elemento y crea un nuevo array
-
+    // 2. Recorremos el catálogo
     return currentCatalog.map(game => {
-
-        // Si no es el que buscamos siguiente
+        // Si no es el producto buscado, continuamos
         if (game.id !== id) {
             return game;
         }
@@ -121,38 +121,55 @@ export function registerSale(currentCatalog, id, quantity) {
             return game;
         }
 
-        // Por quantity es menor que 0
-        if (quantity <= 0) {
-            console.log(`Cantidad no valida: ${quantity}`)
-        }
-
-        // SE LE PONE EL PRECIO DE LA TABLA A Y B
-        // "El precio final aplica Tabla A y Tabla B combinadas"
-
-        // CALCULAMOS EL PRECIO: "TABLA A aplica un recargo o descuento sobre basePrice según el estado de conservación del producto."
+        // CALCULAMOS EL PRECIO (TABLA A)
         const price = business.applyStateAdjustment(game.basePrice, game.state);
 
-        // CALCULAMOS EL DESCUENTO: TABLA B aplica un descuento adicional según las unidades vendidas en la misma operación.
+        // CALCULAMOS EL DESCUENTO (TABLA B)
         const discount = business.getQuantityDiscount(quantity);
-        // PRECIO FINAL REDONDEADO A 2 DECIMALES
+        
+        // PRECIO UNITARIO FINAL REDONDEADO A 2 DECIMALES
         const finalPrice = Math.round(price * (1 - discount) * 100) / 100;
 
-        console.log(`Venta realizada con exito: ${game.id} ${game.title} ${game.state} ${quantity} ${finalPrice}`)
-
-        // -----------------LO METEMOS EN LA SESIÓN----------------
+        // TOTAL DE LA OPERACIÓN
         const total = Math.round(finalPrice * quantity * 100) / 100;
-        session.logSale(id,quantity, total);
-        // ---------------------------------------------------------
 
-        return { ...game, stock: game.stock - quantity };
+        // REGISTRO EN LA SESIÓN DE CAJA
+        session.logSale(id, quantity, total);
+
+        const newStock = game.stock - quantity;
+        console.log(`Venta realizada con éxito: [${game.id}] ${game.title}, ${game.state}, Stock restante: ${newStock} uds | Total: ${total}€`);
+
+        // Retornamos la copia inmutable con el nuevo stock
+        return { 
+            ...game, 
+            stock: newStock 
+        };
+    });
+}
+
+export function addStock(currentCatalog,id, quantity) {
+    // Hay que hacerlo
+
+    return currentCatalog.map(game => {
+        // SI NO ES EL QUE QUEREMOS SIGUIENTE
+        if (game.id !== id) {
+            return game;
+        }
+
+        // BLOQUEO DE AÑADIR NEGATIVOS
+        if (quantity < 0) {
+            console.log("No se puede añadir < 0");
+            return;
+        }
+
+        if (game.id === id) {
+            game.stock = game.stock + quantity;
+            console.log(`El stock se ha añadido:  [${game.id}]: ${game.title} ${game.stock}`)
+        }
     })
 }
 
-export function addStock() {
-    // Hay que hacerlo
-}
-
-export function cashReport(currentCatalog, saleList = []) {
+export function cashReport(saleList = []) {
     // Hay que hacerlo y cambiar el nombre de la función no lo veo muy claro
 
     // IDEA: CADA VEZ QUE SE HACE ALGO COMO REGISTRAR UNA VENTA O ALGO QUE IMPLIQUE ALGUNA MODIFICACIÓN ETC, CON EL .reduce() (RECUERDA QUE ES UN CONTADOR, NO ES NADA DE REDUCIR) CONTAMOS LAS VENTAS, LOS PRODUCTOS ENCONTRADOS...
