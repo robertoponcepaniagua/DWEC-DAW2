@@ -4,7 +4,6 @@
 // (nunca mutan el array original).
 
 // IMPORTS
-import { catalog } from "../data/catalog";
 import * as business from "./business";
 import { session } from "./sessionState";
 // ----
@@ -139,7 +138,7 @@ export function registerSale(currentCatalog,id, quantity) {
         const newStock = game.stock - quantity;
         console.log(`Venta realizada con éxito: [${game.id}] ${game.title}, ${game.state}, Stock restante: ${newStock} uds | Total: ${total}€`);
 
-        // Retornamos la copia inmutable con el nuevo stock
+        // Devolvemos una COPIA NUEVA con todo actualizado
         return { 
             ...game, 
             stock: newStock 
@@ -159,13 +158,17 @@ export function addStock(currentCatalog,id, quantity) {
         // BLOQUEO DE AÑADIR NEGATIVOS
         if (quantity < 0) {
             console.log("No se puede añadir < 0");
-            return;
+            return currentCatalog;
         }
 
-        if (game.id === id) {
-            game.stock = game.stock + quantity;
-            console.log(`El stock se ha añadido:  [${game.id}]: ${game.title} ${game.stock}`)
-        }
+        
+        let newStock = game.stock + quantity;
+        console.log(`El stock se ha añadido:  [${game.id}]: ${game.title} ${game.stock}`)
+        // Devolvemos una COPIA NUEVA con todo actualizado
+        return {
+            ...game,
+            stock: newStock
+        };
     })
 }
 
