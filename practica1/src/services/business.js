@@ -44,11 +44,15 @@ export function getQuantityDiscount(quantity) {
     return 0;
   }
 
+  // TABLA UN TRAMO NUEVO DE 6 O MÁS UNIDADES CON UN 15 DE DESCUENTO
+
   // Lógica de la Tabla B
   if(quantity === 1) {
     return 0;
   } else if(quantity >= 2 && quantity <= 3) {
     return 0.05;
+  } else if(quantity >= 6) {
+    return 0.15;
   } else {
     return 0.10;
   }
