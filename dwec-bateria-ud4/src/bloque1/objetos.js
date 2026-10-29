@@ -61,7 +61,7 @@ export function contarPorAutor(libros) {
 //        socio = { nombre: "Ana", direccion: { ciudad: "Cádiz" }, prestamos: ["111"] }
 //        Cuidado: { ...socio } no basta. ¿Por qué? (predicción p3)
 export function copiaProfunda(socio) {
-  const socio_copia = {...socio, direccion: {...socio.direccion}, prestamo: [...socio.prestamo]}
+  const socio_copia = {...socio, direccion: {...socio.direccion}, prestamos: [...socio.prestamos]}
   return socio_copia
 }
 
@@ -70,18 +70,13 @@ export function copiaProfunda(socio) {
 //        (pista: Object.entries + filter + map + join)
 export function ficha(libro) {
 
-  const linea = "";
-
-  const libro_objeto = Object.entries(libro)
-
-  libro_objeto
-    .filter(valor => typeof valor === "function")
-    .map(valor => {
-      "autor"; valor.autor,
-      "titulo"; valor.titulo,
-      "autor"; valor.autor,
-      "paginas"; valor.paginas,
-      "prestado"; valor.prestado
-    })
-    
+  // object.entries convierte las propiedades de un objeto en un array de parejas
+  const linea = Object.entries(libro)
+  // typeof te dice qué tipo de dato tiene un valor
+    .filter(valor => typeof valor[1] !== "function")
+    // Mapea el nombre de la propiedad y el tipo que es la propiedad menos los que son function
+    .map(valor => `${valor[0]}: ${valor[1]}`)
+    // join de cada línea un punto raro
+    .join(" · ")
+    return linea;
 }
