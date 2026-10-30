@@ -40,37 +40,67 @@ export class Punto {
 //   - Libro.creados: cuántos libros se han creado (un contador privado y static, con un getter static).
 //   - Libro.desde({ titulo, autor, paginas }) → un Libro nuevo a partir de un objeto.
 export class Libro {
+
+  // Atributo privado de instancia: almacena las páginas de cada libro.
   #paginas
+
+  // Atributo estático privado: contador compartido por toda la clase.
+  static #creados = 0
+
   constructor(titulo, autor, paginas) {
-  this.titulo = titulo.trim()
-  if (typeof titulo !== "string" || titulo.trim() === "") throw new Error("Falta el titulo");
-  this.autor = autor;
-  this.paginas = paginas;
-  }
 
-
-  get paginas() {
-    return this.#paginas;
-  }
-
-  set paginas(n) {
-    if (n < 0) throw new Error ("Las páginas tienen que ser > 0")
-    this.#paginas = n 
-  }
-
-  get esLargo() {
-    if (this.#paginas >= 400) {
-      return true;
+    // Validación: comprueba que el título sea un string y no esté vacío.
+    if (typeof titulo !== "string" || titulo.trim() === "") {
+      throw new Error("Falta el titulo")
     }
-    return false
+
+    // Asignación de atributos de instancia.
+    this.titulo = titulo.trim()
+    this.autor = autor
+    this.paginas = paginas
+
+    // Incrementa el contador de libros creados.
+    Libro.#creados++
   }
+
+  // Getter: permite consultar las páginas del libro.
+  get paginas() {
+    return this.#paginas
+  }
+
+  // Setter: valida y modifica el número de páginas.
+  set paginas(n) {
+    if (!Number.isInteger(n) || n <= 0) {
+      throw new Error("Las páginas tienen que ser un entero mayor que 0")
+    }
+
+    this.#paginas = n
+  }
+
+  // Getter calculado: indica si el libro tiene 400 páginas o más.
+  get esLargo() {
+    return this.#paginas >= 400
+  }
+
+  // Método de instancia: devuelve un resumen del libro.
   resumen() {
-    return `${this.titulo} | ${this.autor} | ${this.#paginas} págs`
+    return `${this.titulo} (${this.autor}), ${this.#paginas} págs.`
+  }
+
+  // Getter estático: permite consultar el contador desde la clase.
+  static get creados() {
+    return Libro.#creados
+  }
+
+  // Método estático de fábrica: permite crear un libro pasando un objeto.
+  static desde({ titulo, autor, paginas }) {
+    return new Libro(titulo, autor, paginas)
   }
 }
 
 // ✍️ 3 · Devuelve una FUNCIÓN que, al llamarla suelta (avisar()), devuelva libro.resumen().
 //        Si devuelves libro.resumen tal cual, se pierde this. ¿Cómo lo evitas? (apartado 7.7)
 export function crearAvisador(libro) {
-  throw new Error("Sin hacer");
+  const funcion = libro.resumen.bind(libro)
+  return funcion
 }
