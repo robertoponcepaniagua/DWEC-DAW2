@@ -20,7 +20,11 @@ export class Contador {
 //        (pista: Math.hypot)
 export class Punto {
   constructor(x, y) {
-    throw new Error("Sin hacer");
+    this.x = x
+    this.y = y
+  }
+  distanciaAlOrigen() {
+    return Math.hypot(this.x, this.y)
   }
 }
 
@@ -36,8 +40,32 @@ export class Punto {
 //   - Libro.creados: cuántos libros se han creado (un contador privado y static, con un getter static).
 //   - Libro.desde({ titulo, autor, paginas }) → un Libro nuevo a partir de un objeto.
 export class Libro {
+  #paginas
   constructor(titulo, autor, paginas) {
-    throw new Error("Sin hacer");
+  this.titulo = titulo.trim()
+  if (typeof titulo !== "string" || titulo.trim() === "") throw new Error("Falta el titulo");
+  this.autor = autor;
+  this.paginas = paginas;
+  }
+
+
+  get paginas() {
+    return this.#paginas;
+  }
+
+  set paginas(n) {
+    if (n < 0) throw new Error ("Las páginas tienen que ser > 0")
+    this.#paginas = n 
+  }
+
+  get esLargo() {
+    if (this.#paginas >= 400) {
+      return true;
+    }
+    return false
+  }
+  resumen() {
+    return `${this.titulo} | ${this.autor} | ${this.#paginas} págs`
   }
 }
 
