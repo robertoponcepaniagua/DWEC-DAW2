@@ -14,31 +14,43 @@ Lector.prototype.saludar = function () {
 // 🪜 ESCALERA ──────────────────────────────────────────────────────────────────
 // 🪜 1 · ¿Es una propiedad PROPIA del objeto?   esPropia(Object.create({ a: 1 }), "a") → false
 export function esPropia(objeto, clave) {
-  throw new Error("Sin hacer");
+  return Object.hasOwn(objeto, clave)
 }
 
 // 🪜 2 · ¿Se encuentra la propiedad en el objeto O en su cadena de prototipos?
 //        estaEnLaCadena({}, "toString") → true      (pista: el operador in)
 export function estaEnLaCadena(objeto, clave) {
-  throw new Error("Sin hacer");
+  return clave in objeto
 }
 
 // ✍️ TU TURNO ─────────────────────────────────────────────────────────────────
 // ✍️ 1 · Escribe la función constructora Socio(nombre, curso), igual que Lector, con un método
 //        presentarse() que devuelva "Soy Ana, de 2º DAW". El método NO puede estar dentro de cada socio.
 export function Socio(nombre, curso) {
-  throw new Error("Sin hacer");
+  this.nombre = nombre
+  this.curso = curso
+  Socio.prototype.presentarse = function() {
+    return `Soy ${this.nombre}, de ${this.curso}`
+  }
 }
 
 // ✍️ 2 · Crea un objeto cuyo PROTOTIPO sea `base` (no una copia) y que tenga una propiedad propia nombre.
 //        Lo de base (por ejemplo un método saludo) tiene que funcionar en el objeto nuevo sin copiarlo.
 export function crearDesde(base, nombre) {
-  throw new Error("Sin hacer");
+  const copia = Object.create(base);
+  copia.nombre = nombre;
+  return copia;
 }
 
 // ✍️ 3 · ¿Cuántos prototipos hay por encima del objeto hasta llegar a null?
 //        niveles({}) → 1 (Object.prototype) · niveles(Object.create(null)) → 0 · niveles(new Lector("x")) → 2
 //        (pista: Object.getPrototypeOf en un bucle)
 export function niveles(objeto) {
-  throw new Error("Sin hacer");
+  let contar = 0
+  let copia = Object.getPrototypeOf(objeto)
+  while (copia !== null) {
+    contar += 1;
+    copia = Object.getPrototypeOf(copia)
+  }
+  return contar
 }
