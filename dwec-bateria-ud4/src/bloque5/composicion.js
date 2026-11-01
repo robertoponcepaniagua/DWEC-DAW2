@@ -1,6 +1,6 @@
 // Bloque 5 · Composición, Map, Date, Intl y errores propios
 // Explicación: web → 4.1 Batería → Bloque 5 (y los apartados 9 y 10 de la UD4).
-// Comprueba con:  ./bateria.sh comprobar 5
+// Comprueba con: ./bateria.sh comprobar 5
 
 // 👀 EJEMPLO RESUELTO: un error propio ────────────────────────────────────────
 // Heredar de Error permite distinguir «un préstamo no permitido» (se le explica al usuario) de un fallo del programa.
@@ -16,7 +16,8 @@ export class PrestamoError extends Error {
 // 🪜 1 · La fecha con formato español: formatoFecha(new Date(2026, 10, 3)) → "03/11/2026"
 //        (pista: Intl.DateTimeFormat("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" }))
 export function formatoFecha(fecha) {
-  throw new Error("Sin hacer");
+  const formato = Intl.DateTimeFormat("es-ES",{ day: "2-digit", month: "2-digit", year: "numeric" })
+  return formato.format(fecha)
 }
 
 // ✍️ TU TURNO ─────────────────────────────────────────────────────────────────
@@ -24,7 +25,9 @@ export function formatoFecha(fecha) {
 //        - No cambies `desde` (trabaja sobre una copia).
 //        - Suma días con setDate, no milisegundos: el 25/10 cambia la hora y ese día dura 25 h.
 export function fechaDevolucion(desde, dias) {
-  throw new Error("Sin hacer");
+    const resultado = new Date(desde) // copia, no modifica desde
+    resultado.setDate(resultado.getDate() + dias)
+    return resultado
 }
 
 // ✍️ 2 · Un Socio TIENE préstamos (composición): guárdalos en un Map PRIVADO isbn → fecha de devolución.
@@ -36,7 +39,39 @@ export function fechaDevolucion(desde, dias) {
 //   - vencidos(hoy) → los isbn cuya fecha de devolución es ANTERIOR al día de hoy. Cuenta por días: lo que vence
 //     hoy aún no está vencido, sea la hora que sea.
 export class Socio {
+  // Atributo privado
+  #pestamos = new Map();
+
   constructor(nombre, maximo = 3) {
-    throw new Error("Sin hacer");
+    this.nombre = nombre;
+    this.maximo = maximo;
+  }
+
+  get numPrestamos() {
+    return this.#pestamos.size
+  }
+
+  prestar(isbn, hoy, dias = 14) {
+
+    const fecha_hoy = new Date(hoy)
+    const fechaDevolucion = new Date(fecha_hoy.setDate(fecha_hoy.getDate() + dias))
+
+    if (this.#pestamos.size >= this.maximo) {
+      throw new PrestamoError("Has alcanzado el máximo de prestamos")
+    }
+    if (this.#pestamos.has(isbn)) {
+      throw new PrestamoError("Ya tiene ese isbn")
+    }
+    if (fechaDevolucion.getDate() >= fecha_hoy.getDate()) {
+      throw new PrestamoError("Máximo de días")
+    }
+    this.#pestamos.set(isbn, fechaDevolucion)
+  }
+  devolver(isbn) {
+    if (!this.#pestamos.has(isbn)) {
+      throw new PrestamoError("No la tiene")
+    } else {
+      this.#pestamos.delete(isbn)
+    }
   }
 }
