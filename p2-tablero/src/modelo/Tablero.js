@@ -10,19 +10,41 @@ import { aDatos, desdeDatos } from "./serializar.js";
 export class Tablero {
   static COLUMNAS = Object.freeze(["Por hacer", "En curso", "Hecho"]);
   static VERSION_DATOS = 1; // (bloque C) si algún día cambia el formato guardado, se sube
-  // Privado: #columnas, un Map nombre → Columna
-
+  // Privado: #columnas, un Map nombre → Columnaç
+  #columnas;
   // ✍️ A3 ──────────────────────────────────────────────────────────────────────
   constructor(limiteEnCurso = 3) {
     // Crea las tres columnas; solo «En curso» lleva límite WIP (limiteEnCurso)
-    throw new Error("Sin hacer");
+    this.#columnas = new Map();
+    for (const columna of Tablero.COLUMNAS) {
+      if (columna === "En curso") {
+        this.#columnas.set("En curso",new Columna("En curso",limiteEnCurso));
+      } else {
+        this.#columnas.set(columna, new Columna(columna))
+      }
+    }
   }
 
   // static desde(datos, limiteEnCurso): un Tablero con una tarea por cada objeto de datos
   //   (usa crearTarea)
-
+  static desde(datos, limiteEnCurso) {
+    crearTarea() // no puedo hacerlo sin crear tarea terminado, o eso creo
+  }
   // columna(nombre): la Columna, o un Error si no existe (que el mensaje lleve el nombre)
   // get columnas: array con las tres columnas, en orden
+
+  columna(nombre) {
+    if (this.#columnas.has(nombre)) {
+      return this.#columnas.get(nombre)
+    } else {
+      const nombres_columnas = this.columnas // para aceder a los metodos de las clases se hace con this y el nombre
+      throw new Error(`No existe ninguna columna llamada ${nombre} en ${nombres_columnas}`)
+    }
+  }
+
+  get columnas() {
+    return [...this.#columnas.keys()]; //[] para convertilo en array, .keys() porque es un map y necesito los nombres
+  }
 
   // crearTarea(datos): TareaRecurrente si datos trae cadaDias, Tarea si no → a «Por hacer»
   //   y la devuelve. datos es un objeto { titulo, prioridad, limite, cadaDias }: saca cada campo
