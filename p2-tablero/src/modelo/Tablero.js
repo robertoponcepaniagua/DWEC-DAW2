@@ -28,7 +28,15 @@ export class Tablero {
   // static desde(datos, limiteEnCurso): un Tablero con una tarea por cada objeto de datos
   //   (usa crearTarea)
   static desde(datos, limiteEnCurso) {
-    //crearTarea() // no puedo hacerlo sin crear tarea terminado, o eso creo
+    // SIRVE PARA CREAR UN TABLERO COMPLETO A PARTIR DE UN ARRAY DE OBJETOS
+    const tablero = new Tablero(limiteEnCurso);
+    const porHacer = tablero.columna("Por hacer");
+
+    for (const tarea of datos) {
+      const creada = tablero.crearTarea(tarea);
+      porHacer.añadir(creada);
+    }
+    return tablero;
   }
   // columna(nombre): la Columna, o un Error si no existe (que el mensaje lleve el nombre)
   // get columnas: array con las tres columnas, en orden
@@ -43,7 +51,7 @@ export class Tablero {
   }
 
   get columnas() {
-    return [...this.#columnas.keys()]; //[] para convertilo en array, .keys() porque es un map y necesito los nombres
+    return [...this.#columnas.values()]; //[] para convertilo en array, .values() porque es un map y necesito las columnas
   }
 
   // crearTarea(datos): TareaRecurrente si datos trae cadaDias, Tarea si no → a «Por hacer»
@@ -55,7 +63,7 @@ export class Tablero {
       const TareaRecurrenteCreada = new TareaRecurrente(datos.titulo, datos.prioridad, datos.limite, datos.cadaDias);
       return TareaRecurrenteCreada;
     } else {
-      const TareaCreada = new Tarea(datos.titulo, "Por hacer", datos.limite);
+      const TareaCreada = new Tarea(datos.titulo,datos.prioridad, datos.limite);
       return TareaCreada;
     }
   }
@@ -64,7 +72,14 @@ export class Tablero {
   // dondeEsta(id): la Columna donde está, o null
 
   buscar(id) {
-    const TareaBuscada = [...this.#columnas].filter(tarea => tarea.id === id) ? TareaBuscada : null
+    for (const columna of this.#columnas.values()) {
+      const tarea = columna.tareas.find(tarea => tarea.id === id);
+
+      if (tarea) {
+        return tarea
+      }
+    }
+    return null;
   }
 
   // mover(id, destino): Error si no existe la tarea · Error si la columna destino está llena
@@ -76,44 +91,45 @@ export class Tablero {
     //  - DESTINO STRING
     //  - UN TABLERO TIENE 3 COLUMNAS, ENTONCES EL DESTINO ES UNA DE ESAS COLUMNAS, Y EN LAS COLUMNAS SE GUARDAN TAREAS QUE EL ID ES UNA DE ESAS TAREAS.
     //  - ENTONCES ESTE MÉTODO LO QUE HACE ES MOVER LA TAREA DE COLUMNA EN EL TABLERO
+    
+    
+    const columnaDestino = this.#columnas.get(destino); //coger la columna de destino
 
-    const existe = this.#columnas.has(destino);
-    if (existe) {
-      // SI EXISTE
-      const columnaBuscada = this.#columnas.get(destino); 
-      const columnaAnterior = () => {
-        for (const columna of this.#columnas.values()) {
-          // AQUÍ OBTENGO TODAS LAS COLUMNAS DEL MAP
-          let tareas = this.columna.tareas(); 
-          for (const tarea of tareas) {
-            if (tarea.id === id) {
-              columna.quitar(id);
-            }
-          }
-        }
-      }
-
-      if (!columnaBuscada.llena()) {
-        // AHORA SI NO ESTÁ LLENA:
-        const arrayTareas = this.#columnas.tareas(); // ARRAY DE TODAS LAS TAREAS
-        const tareaBuscada = [...arrayTareas].find(tarea => tarea.id === id) //CON ESTO SE SUPONE QUE YA TENGO LA TAREA
-
-        if (typeof tareaBuscada === 'object' && tareaBuscada !== null) {
-          // SI ES UN OBJETO Y NO ES NULL:
-          columnaBuscada.añadir(tareaBuscada);
-        } else {
-          throw new TypeError("Tarea Buscada no valida");
-        }
-
-      } else {
-        // SI ESTÁ LLENA:
-        throw new Error("La columna está llena");
-      }
-
-    } else {
-      // SI NO EXISTE
-      throw new Error("El destino no existe")
+    if (!columnaDestino) { //VERIFICAR SI EXISTE O NO SI NO EXISTE LANZAMOS ERROR
+      throw new Error("El destino no existe");
     }
+
+    // PARA CONSEGUIR LA COLUMNA DE ORIGEN DE LA TAREA
+    let columnaOrigen = null;
+    for (const columna of this.#columnas.values()) {
+      if(columna.tiene(id)) { 
+        columnaOrigen = columna;
+        break;
+      }
+    }
+
+    if (!columnaOrigen) {
+      throw new Error("La tarea no existe");
+    }
+
+    if (columnaDestino === columnaOrigen) {
+      throw new Error("La tarea ya está en su destino");
+    }
+
+    if (columnaOrigen.nombre === "Hecho") {
+      throw new MovimientoNoPermitidoError("No se puede sacar de Hecho");
+    }
+
+    if (columnaDestino.llena) {
+      throw new ColumnaLlenaError("La columna ya está llena");
+    }
+
+    const tarea = columnaOrigen.tareas.find(tarea => tarea.id === id);
+
+    columnaOrigen.quitar(id);
+    columnaDestino.añadir(tarea);
+    
+    return tarea;
   }
 
   // completar(id): la mueve a «Hecho» y añade a «Por hacer» lo que devuelva tarea.alCompletar()
