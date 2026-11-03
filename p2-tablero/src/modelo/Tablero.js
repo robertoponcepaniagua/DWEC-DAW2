@@ -28,7 +28,7 @@ export class Tablero {
   // static desde(datos, limiteEnCurso): un Tablero con una tarea por cada objeto de datos
   //   (usa crearTarea)
   static desde(datos, limiteEnCurso) {
-    crearTarea() // no puedo hacerlo sin crear tarea terminado, o eso creo
+    //crearTarea() // no puedo hacerlo sin crear tarea terminado, o eso creo
   }
   // columna(nombre): la Columna, o un Error si no existe (que el mensaje lleve el nombre)
   // get columnas: array con las tres columnas, en orden
@@ -50,11 +50,34 @@ export class Tablero {
   //   y la devuelve. datos es un objeto { titulo, prioridad, limite, cadaDias }: saca cada campo
   //   y pásaselo al constructor, en su orden (new Tarea(datos) NO vale: espera el título)
 
+  crearTarea(datos) {
+    if (Object.hasOwn(datos, "cadaDias")) {
+      const TareaRecurrenteCreada = new TareaRecurrente(datos.titulo, datos.prioridad, datos.limite, datos.cadaDias);
+      return TareaRecurrenteCreada;
+    } else {
+      const TareaCreada = new Tarea(datos.titulo, "Por hacer", datos.limite);
+      return TareaCreada;
+    }
+  }
+
   // buscar(id): la tarea, esté en la columna que esté, o null
   // dondeEsta(id): la Columna donde está, o null
 
+  buscar(id) {
+    const TareaBuscada = [...this.#columnas].filter(tarea => tarea.id === id) ? TareaBuscada : null
+  }
+
   // mover(id, destino): Error si no existe la tarea · Error si la columna destino está llena
   //   (¡comprueba ANTES de quitarla de su columna, o se perdería!) · la mueve y la devuelve
+
+  mover(id, destino) {
+    const existe = this.#columnas.tiene(id);
+    if (existe) {
+       
+    } else {
+      
+    }
+  }
 
   // completar(id): la mueve a «Hecho» y añade a «Por hacer» lo que devuelva tarea.alCompletar()
   //   ⚠️ Sin preguntar si es recurrente: eso es el polimorfismo
