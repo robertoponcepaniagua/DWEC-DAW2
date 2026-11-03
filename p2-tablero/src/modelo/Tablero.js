@@ -135,6 +135,21 @@ export class Tablero {
   // completar(id): la mueve a «Hecho» y añade a «Por hacer» lo que devuelva tarea.alCompletar()
   //   ⚠️ Sin preguntar si es recurrente: eso es el polimorfismo
 
+  completar(id) {
+    // MOVER TAREA A HECHO: MOVER DEVUELVE UNA TAREA (LAS TAREAS SE MUEVEN ENTRE COLUMNAS)
+    // ALCOMPLETAR ESTÁ EN TAREA Y TAREARECURRENTE CADA INSTANCIA DEVUELVE ALGO DIFERENTE TAREA = [] TAREARECURRENTE = LA TAREA SIGUIENTE
+    // NO HAY QUE PREGUNTAR LA INSTANCIA, OSEA SIN INSTANCEOF
+
+    // Pasa la tarea a hecho y devuelve esa misma tarea
+    const tarea = this.mover(id, "Hecho");
+    // Conseguir la columna por hacer de el tablero
+    const porHacer = this.#columnas.get("Por hacer");
+    // for por qué al completar es un array y puede devolver la siguiente tarea en el caso de tareaRecurrente
+    for (const tareaNueva of tarea.alCompletar()) {
+      porHacer.añadir(tareaNueva); //se añade la tarea a "Por hacer"
+    }
+    return tarea;
+  }
   // resumen(hoy = new Date()): { porHacer, enCurso, hecho, vencidas }
   //   vencidas = las que estaVencida(hoy) y NO están en «Hecho»
 
