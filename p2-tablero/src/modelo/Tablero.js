@@ -71,11 +71,48 @@ export class Tablero {
   //   (¡comprueba ANTES de quitarla de su columna, o se perdería!) · la mueve y la devuelve
 
   mover(id, destino) {
-    const existe = this.#columnas.tiene(id);
+    // COMENATRIOS PARA NO LIARME:
+    //  - ID ES NUMBER
+    //  - DESTINO STRING
+    //  - UN TABLERO TIENE 3 COLUMNAS, ENTONCES EL DESTINO ES UNA DE ESAS COLUMNAS, Y EN LAS COLUMNAS SE GUARDAN TAREAS QUE EL ID ES UNA DE ESAS TAREAS.
+    //  - ENTONCES ESTE MÉTODO LO QUE HACE ES MOVER LA TAREA DE COLUMNA EN EL TABLERO
+
+    const existe = this.#columnas.has(destino);
     if (existe) {
-       
+      // SI EXISTE
+      const columnaBuscada = this.#columnas.get(destino); 
+      const columnaAnterior = () => {
+        for (const columna of this.#columnas.values()) {
+          // AQUÍ OBTENGO TODAS LAS COLUMNAS DEL MAP
+          let tareas = this.columna.tareas(); 
+          for (const tarea of tareas) {
+            if (tarea.id === id) {
+              columna.quitar(id);
+            }
+          }
+        }
+      }
+
+      if (!columnaBuscada.llena()) {
+        // AHORA SI NO ESTÁ LLENA:
+        const arrayTareas = this.#columnas.tareas(); // ARRAY DE TODAS LAS TAREAS
+        const tareaBuscada = [...arrayTareas].find(tarea => tarea.id === id) //CON ESTO SE SUPONE QUE YA TENGO LA TAREA
+
+        if (typeof tareaBuscada === 'object' && tareaBuscada !== null) {
+          // SI ES UN OBJETO Y NO ES NULL:
+          columnaBuscada.añadir(tareaBuscada);
+        } else {
+          throw new TypeError("Tarea Buscada no valida");
+        }
+
+      } else {
+        // SI ESTÁ LLENA:
+        throw new Error("La columna está llena");
+      }
+
     } else {
-      
+      // SI NO EXISTE
+      throw new Error("El destino no existe")
     }
   }
 
