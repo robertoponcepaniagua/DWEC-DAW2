@@ -153,6 +153,39 @@ export class Tablero {
   // resumen(hoy = new Date()): { porHacer, enCurso, hecho, vencidas }
   //   vencidas = las que estaVencida(hoy) y NO están en «Hecho»
 
+
+  resumen(hoy = new Date()) {
+    // IDEA: CONTAR LAS TAREAS QUE ESTÁN POR HACER, EN CURSO, HECHO Y VENCIDAS
+
+    const porHacer = this.#columnas.get("Por hacer").tareas.length;
+    const enCurso = this.#columnas.get("En curso").tareas.length;
+    const hecho = this.#columnas.get("Hecho").tareas.length;
+    
+    // LAS TAREAS VENCIDAS SERÁN LAS TAREAS DE POR HACER Y EN CURSO QUE HAN VENCIDO
+    const arrayvencidas = [];
+
+    for (const tareaPorHacer of this.#columnas.get("Por hacer").tareas) {
+      if (tareaPorHacer.estaVencida(hoy)) {
+        arrayvencidas.push(tareaPorHacer);
+      }
+    }
+
+    for (const tareaEnCurso of this.#columnas.get("En curso").tareas) {
+      if (tareaEnCurso.estaVencida(hoy)) {
+        arrayvencidas.push(tareaEnCurso);
+      }
+    }
+
+    const vencidas = arrayvencidas.length
+
+    return {
+      porHacer: porHacer,
+      enCurso: enCurso,
+      hecho: hecho,
+      vencidas: vencidas,
+    }
+  }
+
   // ✍️ A5 · Reglas (vuelves a mover y completar) ─────────────────────────────────
   //   - Columna llena → ColumnaLlenaError (en vez de un Error cualquiera)
   //   - Sacar una tarea de «Hecho», o «moverla» a la columna en la que ya está →
