@@ -15,7 +15,7 @@ export class TareaRecurrente extends Tarea {
     if (!Number.isInteger(cadaDias) || cadaDias < 1)
       throw new RangeError("El número debe de ser un entero");
     // 4 · Una recurrente sin límite no tiene sentido → si this.limite es null, TypeError.
-    if (limite == null) throw new TypeError("El límite no puede ser null");
+    if (limite === null) throw new TypeError("El límite no puede ser null");
     // 5 · Guarda this.cadaDias.
     this.cadaDias = cadaDias;
   }
