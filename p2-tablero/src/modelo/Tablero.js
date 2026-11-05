@@ -2,7 +2,7 @@
 // En el bloque C volverás aquí para ✍️ C4 (toJSON y desdeJSON).
 // El tablero TIENE tres columnas: es composición, no hereda de nadie.
 import { Columna } from "./Columna.js";
-import { ColumnaLlenaError, MovimientoNoPermitidoError } from "./errores.js";
+import { ColumnaLlenaError, ErrorTablero, MovimientoNoPermitidoError } from "./errores.js";
 import { Tarea } from "./Tarea.js";
 import { TareaRecurrente } from "./TareaRecurrente.js";
 import { aDatos, desdeDatos } from "./serializar.js";
@@ -82,6 +82,13 @@ export class Tablero {
     return null;
   }
 
+  dondeEsta(id) {
+  for (const columna of this.#columnas.values()) {
+    if (columna.tiene(id)) return columna;
+  }
+  return null;
+  }
+
   // mover(id, destino): Error si no existe la tarea · Error si la columna destino está llena
   //   (¡comprueba ANTES de quitarla de su columna, o se perdería!) · la mueve y la devuelve
 
@@ -96,37 +103,30 @@ export class Tablero {
     const columnaDestino = this.#columnas.get(destino); //coger la columna de destino
 
     if (!columnaDestino) { //VERIFICAR SI EXISTE O NO SI NO EXISTE LANZAMOS ERROR
-      throw new Error("El destino no existe");
+      throw new Error(`La columna «${destino}» no existe`);
     }
 
     // PARA CONSEGUIR LA COLUMNA DE ORIGEN DE LA TAREA
-    let columnaOrigen = null;
-    for (const columna of this.#columnas.values()) {
-      if(columna.tiene(id)) { 
-        columnaOrigen = columna;
-        break;
-      }
-    }
+    const columnaOrigen = this.dondeEsta(id);
 
     if (!columnaOrigen) {
-      throw new Error("La tarea no existe");
+      throw new Error(`La tarea ${id} no existe`);
     }
 
     if (columnaDestino === columnaOrigen) {
-      throw new Error("La tarea ya está en su destino");
+      throw new MovimientoNoPermitidoError(id, columnaOrigen.nombre, columnaDestino.nombre);
     }
 
     if (columnaOrigen.nombre === "Hecho") {
-      throw new MovimientoNoPermitidoError("No se puede sacar de Hecho");
+      throw new MovimientoNoPermitidoError(id, columnaOrigen.nombre, columnaDestino.nombre);
     }
 
     if (columnaDestino.llena) {
-      throw new ColumnaLlenaError("La columna ya está llena");
+      throw new ColumnaLlenaError(columnaDestino);
     }
 
-    const tarea = columnaOrigen.tareas.find(tarea => tarea.id === id);
+    const tarea = columnaOrigen.quitar(id);
 
-    columnaOrigen.quitar(id);
     columnaDestino.añadir(tarea);
     
     return tarea;
