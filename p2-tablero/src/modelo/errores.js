@@ -6,10 +6,10 @@
 //   - constructor(mensaje): llama al padre con el mensaje
 //   - name = el nombre de la clase. Pista: this.constructor.name también vale en las subclases.
 export class ErrorTablero extends Error {
-    constructor(mensaje) {
-        super(mensaje); //Recoge el mensaje del padre
-        this.name = this.constructor.name;
-    }
+  constructor(mensaje) {
+    super(mensaje); //Recoge el mensaje del padre
+    this.name = this.constructor.name;
+  }
 }
 
 // ColumnaLlenaError extends ErrorTablero
@@ -17,28 +17,28 @@ export class ErrorTablero extends Error {
 //   - mensaje: «En curso» está llena (máximo 2)   ← que diga «llena», el nombre y el límite
 //   - guarda this.columna (el NOMBRE, un string) y this.limite
 export class ColumnaLlenaError extends ErrorTablero {
-    constructor(columna) {
-        const nombre = columna.nombre;
-        const limite = columna.limiteWip;
+  constructor(columna) {
+    const nombre = columna.nombre;
+    const limite = columna.limiteWip;
 
-        const mensaje = `«${nombre}» está llena (máximo ${limite})`;
+    const mensaje = `«${nombre}» está llena (máximo ${limite})`;
 
-        super(mensaje);
-        this.columna = nombre;
-        this.limite = limite;
-    }
+    super(mensaje);
+    this.columna = nombre;
+    this.limite = limite;
+  }
 }
 
 // MovimientoNoPermitidoError extends ErrorTablero
 //   - constructor(id, desde, hasta): los dos últimos son nombres de columna
 //   - mensaje con el id de la tarea; guarda this.desde y this.hasta
 export class MovimientoNoPermitidoError extends ErrorTablero {
-    constructor(id, desde, hasta) {
-        const mensaje = `Tarea con id ${id} no puede moverse desde la columna ${desde} hasta ${hasta}`
-        super(mensaje);
+  constructor(id, desde, hasta) {
+    const mensaje = `Tarea con id ${id} no puede moverse desde la columna ${desde} hasta ${hasta}`;
+    super(mensaje);
 
-        this.id = id;
-        this.desde = desde;
-        this.hasta = hasta;
-    }
+    this.id = id;
+    this.desde = desde;
+    this.hasta = hasta;
+  }
 }

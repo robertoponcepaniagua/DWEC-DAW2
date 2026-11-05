@@ -18,9 +18,9 @@ export class Tablero {
     this.#columnas = new Map();
     for (const columna of Tablero.COLUMNAS) {
       if (columna === "En curso") {
-        this.#columnas.set("En curso",new Columna("En curso",limiteEnCurso));
+        this.#columnas.set("En curso", new Columna("En curso", limiteEnCurso));
       } else {
-        this.#columnas.set(columna, new Columna(columna))
+        this.#columnas.set(columna, new Columna(columna));
       }
     }
   }
@@ -43,10 +43,10 @@ export class Tablero {
 
   columna(nombre) {
     if (this.#columnas.has(nombre)) {
-      return this.#columnas.get(nombre)
+      return this.#columnas.get(nombre);
     } else {
-      const nombres_columnas = this.columnas // para aceder a los metodos de las clases se hace con this y el nombre
-      throw new Error(`No existe ninguna columna llamada ${nombre} en ${nombres_columnas}`)
+      const nombres_columnas = this.columnas; // para aceder a los metodos de las clases se hace con this y el nombre
+      throw new Error(`No existe ninguna columna llamada ${nombre} en ${nombres_columnas}`);
     }
   }
 
@@ -60,10 +60,15 @@ export class Tablero {
 
   crearTarea(datos) {
     if (Object.hasOwn(datos, "cadaDias")) {
-      const TareaRecurrenteCreada = new TareaRecurrente(datos.titulo, datos.prioridad, datos.limite, datos.cadaDias);
+      const TareaRecurrenteCreada = new TareaRecurrente(
+        datos.titulo,
+        datos.prioridad,
+        datos.limite,
+        datos.cadaDias,
+      );
       return TareaRecurrenteCreada;
     } else {
-      const TareaCreada = new Tarea(datos.titulo,datos.prioridad, datos.limite);
+      const TareaCreada = new Tarea(datos.titulo, datos.prioridad, datos.limite);
       return TareaCreada;
     }
   }
@@ -73,20 +78,20 @@ export class Tablero {
 
   buscar(id) {
     for (const columna of this.#columnas.values()) {
-      const tarea = columna.tareas.find(tarea => tarea.id === id);
+      const tarea = columna.tareas.find((tarea) => tarea.id === id);
 
       if (tarea) {
-        return tarea
+        return tarea;
       }
     }
     return null;
   }
 
   dondeEsta(id) {
-  for (const columna of this.#columnas.values()) {
-    if (columna.tiene(id)) return columna;
-  }
-  return null;
+    for (const columna of this.#columnas.values()) {
+      if (columna.tiene(id)) return columna;
+    }
+    return null;
   }
 
   // mover(id, destino): Error si no existe la tarea · Error si la columna destino está llena
@@ -98,11 +103,11 @@ export class Tablero {
     //  - DESTINO STRING
     //  - UN TABLERO TIENE 3 COLUMNAS, ENTONCES EL DESTINO ES UNA DE ESAS COLUMNAS, Y EN LAS COLUMNAS SE GUARDAN TAREAS QUE EL ID ES UNA DE ESAS TAREAS.
     //  - ENTONCES ESTE MÉTODO LO QUE HACE ES MOVER LA TAREA DE COLUMNA EN EL TABLERO
-    
-    
+
     const columnaDestino = this.#columnas.get(destino); //coger la columna de destino
 
-    if (!columnaDestino) { //VERIFICAR SI EXISTE O NO SI NO EXISTE LANZAMOS ERROR
+    if (!columnaDestino) {
+      //VERIFICAR SI EXISTE O NO SI NO EXISTE LANZAMOS ERROR
       throw new Error(`La columna «${destino}» no existe`);
     }
 
@@ -128,7 +133,7 @@ export class Tablero {
     const tarea = columnaOrigen.quitar(id);
 
     columnaDestino.añadir(tarea);
-    
+
     return tarea;
   }
 
@@ -153,14 +158,13 @@ export class Tablero {
   // resumen(hoy = new Date()): { porHacer, enCurso, hecho, vencidas }
   //   vencidas = las que estaVencida(hoy) y NO están en «Hecho»
 
-
   resumen(hoy = new Date()) {
     // IDEA: CONTAR LAS TAREAS QUE ESTÁN POR HACER, EN CURSO, HECHO Y VENCIDAS
 
     const porHacer = this.#columnas.get("Por hacer").tareas.length;
     const enCurso = this.#columnas.get("En curso").tareas.length;
     const hecho = this.#columnas.get("Hecho").tareas.length;
-    
+
     // LAS TAREAS VENCIDAS SERÁN LAS TAREAS DE POR HACER Y EN CURSO QUE HAN VENCIDO
     const arrayvencidas = [];
 
@@ -176,14 +180,14 @@ export class Tablero {
       }
     }
 
-    const vencidas = arrayvencidas.length
+    const vencidas = arrayvencidas.length;
 
     return {
       porHacer: porHacer,
       enCurso: enCurso,
       hecho: hecho,
       vencidas: vencidas,
-    }
+    };
   }
 
   // ✍️ A5 · Reglas (vuelves a mover y completar) ─────────────────────────────────
