@@ -43,7 +43,36 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
   //   - [data-dato="vencidas"]: las vencidas de tablero.resumen(ahora)
   //   La fecha de hoy: const ahora = hoy ?? new Date();  (los tests pasan una fija)
   function pintar() {
-    throw new Error("Sin hacer");
+    // la función pintar se encarga de actualizar visualmente el tablero pasar tareas de una columna a otra etc...
+    // entonces tengo que sacar las distintas columnas sacar las tareas y guardarla en cada columna y añadir botones para mover las tareas entre columnasç
+    
+    // la fecha de hoy
+    const ahora = hoy ?? new Date();
+
+    // primero sacamos todas las columnas
+    const elementosColumna = document.querySelectorAll("[data-columna]")
+
+    for (const columna of elementosColumna) {
+      // ahora tenemos que sacar la columna que estamos accediendo
+      const nombreColumna = columna.dataset.columna;
+      const lista = columna.querySelector(".lista");
+      const columnaTablero = tablero.columna(nombreColumna);
+      const tareasOrdenadas = columnaTablero.ordenadas();
+      pintarLista(lista, tareasOrdenadas, ahora);
+
+      const tarjetas = lista.querySelectorAll(".tarjeta")
+
+      for (const tarjeta of tarjetas) {
+        const acciones = ACCIONES[nombreColumna];
+        for (const accion of acciones) {
+          const boton = document.createElement("button")
+          boton.setAttribute("type", "button")
+          boton.setAttribute("data-accion", accion[1])
+          boton.textContent = accion[0]
+          tarjeta.append(boton)
+        }
+      }
+    }
   }
 
   // 👀 Resuelto: avisar("texto") enseña el aviso; avisar("") lo esconde
