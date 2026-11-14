@@ -43,36 +43,67 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
   //   - [data-dato="vencidas"]: las vencidas de tablero.resumen(ahora)
   //   La fecha de hoy: const ahora = hoy ?? new Date();  (los tests pasan una fija)
   function pintar() {
-    // la función pintar se encarga de actualizar visualmente el tablero pasar tareas de una columna a otra etc...
-    // entonces tengo que sacar las distintas columnas sacar las tareas y guardarla en cada columna y añadir botones para mover las tareas entre columnasç
-    
-    // la fecha de hoy
+    // actualiza la página con las tareas del tablero
+    // usa la fecha recibida o la fecha actual si no hay ninguna
     const ahora = hoy ?? new Date();
 
-    // primero sacamos todas las columnas
-    const elementosColumna = document.querySelectorAll("[data-columna]")
+    // saca las columnas del html
+    const elementosColumna = columnas.querySelectorAll("[data-columna]")
 
     for (const columna of elementosColumna) {
-      // ahora tenemos que sacar la columna que estamos accediendo
+      // saca el nombre de la columna desde data-columna
       const nombreColumna = columna.dataset.columna;
+      // busca la lista donde van las tarjetas
       const lista = columna.querySelector(".lista");
+      // saca la columna del tablero con ese nombre
       const columnaTablero = tablero.columna(nombreColumna);
+      // saca las tareas ordenadas de la columna
       const tareasOrdenadas = columnaTablero.ordenadas();
+      // vacía la lista y pinta las tarjetas o el mensaje de sin tareas
       pintarLista(lista, tareasOrdenadas, ahora);
 
+      // saca las tarjetas creadas para ponerles los botones
       const tarjetas = lista.querySelectorAll(".tarjeta")
 
       for (const tarjeta of tarjetas) {
+        // saca las acciones de la columna y en hecho no hay ninguna
         const acciones = ACCIONES[nombreColumna];
         for (const accion of acciones) {
           const boton = document.createElement("button")
+          // evita que el botón envíe un formulario
           boton.setAttribute("type", "button")
+          // guarda la acción del botón en data-accion
           boton.setAttribute("data-accion", accion[1])
+          // pone el texto de la acción en el botón
           boton.textContent = accion[0]
+          // añade el botón a la tarjeta
           tarjeta.append(boton)
         }
       }
+      // busca el contador y saca el límite de tareas de la columna
+      const contador = columna.querySelector(".contador")
+      const limite = columnaTablero.limiteWip
+
+      // si el límite es null la columna no tiene límite de tareas
+      if (limite !== null) {
+        // muestra el número de tareas y el límite
+        contador.textContent = `(${tareasOrdenadas.length}/${limite})`
+      } else {
+        // muestra solo el número de tareas
+        contador.textContent = `(${tareasOrdenadas.length})`
+      }
     }
+    // actualiza el resumen una vez al terminar con las columnas
+    // saca la cantidad de tareas por columna y las vencidas
+    const datos = tablero.resumen(ahora)
+    const total = datos.porHacer + datos.enCurso + datos.hecho
+    // si no hay tareas pone el progreso a cero para no dividir entre cero
+    // si hay tareas calcula el porcentaje de hechas y lo redondea
+    const progreso = total === 0 ? 0 : Math.round((datos.hecho / total) * 100);
+
+    // pone el progreso y las vencidas en el html
+    resumen.querySelector('[data-dato="progreso"]').textContent = `${progreso} %`;
+    resumen.querySelector('[data-dato="vencidas"]').textContent = datos.vencidas;
   }
 
   // 👀 Resuelto: avisar("texto") enseña el aviso; avisar("") lo esconde
