@@ -120,22 +120,31 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
   //   Pista: una función cambiar(accion) con el try/catch te sirve también para el B6.
   
   // lo que hay que hacer es cuando pulse un botón se vaya a su respectivo sitio
-  delegar(columnas, "click", "button[data-accion]", (boton, evento) => {
-    console.log("Botón pulsado", boton)
-
-    // aquí tengo la acción del botón creada en pintar() (no está en el html la acción, la acción se crea dinámicamente en pintar())
-    const accion_boton = boton.dataset.accion
-    // conseguimos la tarjeta del botón para poder cambairlo de tarjeta
-    const tarjeta = boton.closest(".tarjeta")
-
-    const id_tarjeta = Number(tarjeta.dataset.id)
-
-    console.log(`Acción: ${accion_boton} | Id: ${id_tarjeta}`)
-
-    if (accion_boton === ACCIONES["Por hacer"].keys()) {
-      tablero.mover()
+delegar(columnas, "click", "button[data-accion]", (boton, evento) => {
+    const accion = boton.dataset.accion;
+    const tarjeta = boton.closest(".tarjeta");
+    const id_tarjeta = Number(tarjeta.dataset.id);
+    console.log(`Acción: ${accion} | Id: ${id_tarjeta}`);
+    try {
+        if (accion === "empezar") {
+            tablero.mover(id_tarjeta, "En curso");
+        } else if (accion === "volver") {
+            tablero.mover(id_tarjeta, "Por hacer");
+        } else if (accion === "completar") {
+            tablero.completar(id_tarjeta);
+        }
+        // Si el cambio ha funcionado
+        avisar("");
+        pintar();
+        alCambiar(tablero);
+    } catch (error) {
+        if (error instanceof ErrorTablero) {
+            avisar(error.message);
+        } else {
+            throw error;
+        }
     }
-  })
+});
   // ✍️ B6 · submit de `form`: preventDefault, leerFormulario, validar y mostrarErrores. Si hay errores,
   //   no se crea nada. Si no, tablero.crearTarea(datos) (como un cambio más) y form.reset().
 
