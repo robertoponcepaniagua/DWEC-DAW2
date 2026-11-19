@@ -21,7 +21,33 @@ const ACCIONES = {
 //   - cadaDias (si viene): entero mayor que 0. Si es correcto pero no hay limite, el error va
 //     en «limite»: una tarea que se repite necesita fecha límite
 export function validar(datos) {
-  throw new Error("Sin hacer");
+  // guardo todos los mensajes de todos los errores tipo {"limite": mensaje "limite no es valido porque..."}
+  const mensaje = {}
+  const titulo = datos["titulo"]
+
+  if (titulo.length > 80 || titulo.trim() == "") {
+    mensaje["titulo"] = "Título máximo de 80 caracteres y sin estar vacío";
+  }
+
+  let cadaDias = null
+
+  if (datos["cadaDias"].trim() !== "") {
+
+      cadaDias = Number(datos["cadaDias"]);
+
+      if (!Number.isInteger(cadaDias) || cadaDias <= 0) {
+          mensaje["cadaDias"] = "Debe ser un entero mayor que 0";
+      }
+  }
+  const prioridad = datos["prioridad"]
+  if (prioridad.trim() == "") {
+    mensaje["prioridad"] = "Prioridad es obligatoria"
+  }
+  if (datos["limite"].trim() =="" && Number.isInteger(cadaDias) &&cadaDias > 0) {
+    mensaje["limite"] = "Límite no valido"
+  }
+
+  return mensaje
 }
 
 /**
