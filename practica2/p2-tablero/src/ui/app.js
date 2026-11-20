@@ -21,33 +21,23 @@ const ACCIONES = {
 //   - cadaDias (si viene): entero mayor que 0. Si es correcto pero no hay limite, el error va
 //     en «limite»: una tarea que se repite necesita fecha límite
 export function validar(datos) {
-  // guardo todos los mensajes de todos los errores tipo {"limite": mensaje "limite no es valido porque..."}
-  const mensaje = {}
-  const titulo = datos["titulo"]
+  const errores = {};
+  const titulo = datos.titulo;
 
-  if (titulo.length > 80 || titulo.trim() == "") {
-    mensaje["titulo"] = "Título máximo de 80 caracteres y sin estar vacío";
+  if (typeof titulo !== "string" || titulo.trim() === "" || titulo.length > 80) {
+    errores.titulo = "Escribe un título de como mucho 80 caracteres";
   }
 
-  let cadaDias = null
-
-  if (datos["cadaDias"].trim() !== "") {
-
-      cadaDias = Number(datos["cadaDias"]);
-
-      if (!Number.isInteger(cadaDias) || cadaDias <= 0) {
-          mensaje["cadaDias"] = "Debe ser un entero mayor que 0";
-      }
-  }
-  const prioridad = datos["prioridad"]
-  if (prioridad.trim() == "") {
-    mensaje["prioridad"] = "Prioridad es obligatoria"
-  }
-  if (datos["limite"].trim() =="" && Number.isInteger(cadaDias) &&cadaDias > 0) {
-    mensaje["limite"] = "Límite no valido"
+  // leerFormulario ya convierte cadaDias a número y omite la clave si está vacío.
+  if (Object.hasOwn(datos, "cadaDias")) {
+    if (!Number.isInteger(datos.cadaDias) || datos.cadaDias <= 0) {
+      errores.cadaDias = "Debe ser un entero mayor que 0";
+    } else if (!datos.limite) {
+      errores.limite = "Una tarea que se repite necesita fecha límite";
+    }
   }
 
-  return mensaje
+  return errores;
 }
 
 /**
@@ -74,7 +64,7 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
     const ahora = hoy ?? new Date();
 
     // saca las columnas del html
-    const elementosColumna = columnas.querySelectorAll("[data-columna]")
+    const elementosColumna = columnas.querySelectorAll("[data-columna]");
 
     for (const columna of elementosColumna) {
       // saca el nombre de la columna desde data-columna
@@ -89,40 +79,40 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
       pintarLista(lista, tareasOrdenadas, ahora);
 
       // saca las tarjetas creadas para ponerles los botones
-      const tarjetas = lista.querySelectorAll(".tarjeta")
+      const tarjetas = lista.querySelectorAll(".tarjeta");
 
       for (const tarjeta of tarjetas) {
         // saca las acciones de la columna y en hecho no hay ninguna
         const acciones = ACCIONES[nombreColumna];
         for (const accion of acciones) {
-          const boton = document.createElement("button")
+          const boton = document.createElement("button");
           // evita que el botón envíe un formulario
-          boton.setAttribute("type", "button")
+          boton.setAttribute("type", "button");
           // guarda la acción del botón en data-accion
-          boton.setAttribute("data-accion", accion[1])
+          boton.setAttribute("data-accion", accion[1]);
           // pone el texto de la acción en el botón
-          boton.textContent = accion[0]
+          boton.textContent = accion[0];
           // añade el botón a la tarjeta
-          tarjeta.append(boton)
+          tarjeta.append(boton);
         }
       }
       // busca el contador y saca el límite de tareas de la columna
-      const contador = columna.querySelector(".contador")
-      const limite = columnaTablero.limiteWip
+      const contador = columna.querySelector(".contador");
+      const limite = columnaTablero.limiteWip;
 
       // si el límite es null la columna no tiene límite de tareas
       if (limite !== null) {
         // muestra el número de tareas y el límite
-        contador.textContent = `(${tareasOrdenadas.length}/${limite})`
+        contador.textContent = `(${tareasOrdenadas.length}/${limite})`;
       } else {
         // muestra solo el número de tareas
-        contador.textContent = `(${tareasOrdenadas.length})`
+        contador.textContent = `(${tareasOrdenadas.length})`;
       }
     }
     // actualiza el resumen una vez al terminar con las columnas
     // saca la cantidad de tareas por columna y las vencidas
-    const datos = tablero.resumen(ahora)
-    const total = datos.porHacer + datos.enCurso + datos.hecho
+    const datos = tablero.resumen(ahora);
+    const total = datos.porHacer + datos.enCurso + datos.hecho;
     // si no hay tareas pone el progreso a cero para no dividir entre cero
     // si hay tareas calcula el porcentaje de hechas y lo redondea
     const progreso = total === 0 ? 0 : Math.round((datos.hecho / total) * 100);
@@ -144,38 +134,51 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
   //   Si el tablero lanza un ErrorTablero → avisar(error.message) y no se repinta.
   //   Cualquier otro error → se relanza (es un fallo del programa).
   //   Pista: una función cambiar(accion) con el try/catch te sirve también para el B6.
-  
-  // lo que hay que hacer es cuando pulse un botón se vaya a su respectivo sitio
-delegar(columnas, "click", "button[data-accion]", (boton, evento) => {
+
+  // Comparte el repintado y la gestión de errores entre las acciones y el alta.
+  function cambiar(accion) {
+    try {
+      accion();
+    } catch (error) {
+      if (error instanceof ErrorTablero) {
+        avisar(error.message);
+        return;
+      }
+      throw error;
+    }
+    avisar("");
+    pintar();
+    alCambiar(tablero);
+  }
+
+  delegar(columnas, "click", "button[data-accion]", (boton) => {
     const accion = boton.dataset.accion;
     const tarjeta = boton.closest(".tarjeta");
-    const id_tarjeta = Number(tarjeta.dataset.id);
-    console.log(`Acción: ${accion} | Id: ${id_tarjeta}`);
-    try {
-        if (accion === "empezar") {
-            tablero.mover(id_tarjeta, "En curso");
-        } else if (accion === "volver") {
-            tablero.mover(id_tarjeta, "Por hacer");
-        } else if (accion === "completar") {
-            tablero.completar(id_tarjeta);
-        }
-        // Si el cambio ha funcionado
-        avisar("");
-        pintar();
-        alCambiar(tablero);
-    } catch (error) {
-        if (error instanceof ErrorTablero) {
-            avisar(error.message);
-        } else {
-            throw error;
-        }
+    const id = Number(tarjeta.dataset.id);
+
+    if (accion === "empezar") {
+      cambiar(() => tablero.mover(id, "En curso"));
+    } else if (accion === "volver") {
+      cambiar(() => tablero.mover(id, "Por hacer"));
+    } else if (accion === "completar") {
+      cambiar(() => tablero.completar(id));
     }
-});
+  });
   // ✍️ B6 · submit de `form`: preventDefault, leerFormulario, validar y mostrarErrores. Si hay errores,
   //   no se crea nada. Si no, tablero.crearTarea(datos) (como un cambio más) y form.reset().
+  form.addEventListener("submit", (evento) => {
+    evento.preventDefault();
+    const datos = leerFormulario(form);
+    const errores = validar(datos);
+    mostrarErrores(form, errores);
+    if (Object.keys(errores).length > 0) return;
+
+    cambiar(() => {
+      tablero.crearTarea(datos);
+      form.reset();
+    });
+  });
 
   pintar();
   return { pintar };
 }
-
-(void ACCIONES, ErrorTablero, delegar, leerFormulario, mostrarErrores, pintarLista); // (borra esta línea cuando los uses)
