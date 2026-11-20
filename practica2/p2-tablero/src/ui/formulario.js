@@ -29,7 +29,7 @@ export function mostrarErrores(form, errores) {
 
   for (const parrafo of parrafos) {
     // nombre campo obtiene los nombres de los campos (email, nombre...)
-    let nombre_campo = parrafo.dataset.errorDe
+    const nombre_campo = parrafo.dataset.errorDe
     const input = form.elements[nombre_campo];
     // SI EN EL OBJETO ERRORES DEVUELVE ALGO CON ERRORES[NOMBRE_CAMPO] ES TRUE Y SI NO ES FALSE
     if (errores[nombre_campo]) {
