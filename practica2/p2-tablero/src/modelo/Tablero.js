@@ -30,11 +30,8 @@ export class Tablero {
   static desde(datos, limiteEnCurso) {
     // SIRVE PARA CREAR UN TABLERO COMPLETO A PARTIR DE UN ARRAY DE OBJETOS
     const tablero = new Tablero(limiteEnCurso);
-    const porHacer = tablero.columna("Por hacer");
-
     for (const tarea of datos) {
-      const creada = tablero.crearTarea(tarea);
-      porHacer.añadir(creada);
+      tablero.crearTarea(tarea);
     }
     return tablero;
   }
@@ -66,10 +63,10 @@ export class Tablero {
         datos.limite,
         datos.cadaDias,
       );
-      return TareaRecurrenteCreada;
+      return this.columna("Por hacer").añadir(TareaRecurrenteCreada);
     } else {
       const TareaCreada = new Tarea(datos.titulo, datos.prioridad, datos.limite);
-      return TareaCreada;
+      return this.columna("Por hacer").añadir(TareaCreada);
     }
   }
 
