@@ -198,6 +198,10 @@ export class Tablero {
   // toJSON(): { version, limiteEnCurso, columnas: { "Por hacer": [datos…], … } }
   //   JSON.stringify(tablero) lo llama solo. Sin él sale "{}": los # no se ven. Usa aDatos.
 
+  toJSON() {
+    // implementar función
+  }
+
   /** Lo contrario de toJSON: el MISMO tablero (columnas, ids y límite WIP). Lanza si no encaja. */
   static desdeJSON(datos) {
     //si los datos son null o la versión no coincide, lanzo un error.
