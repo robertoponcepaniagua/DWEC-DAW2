@@ -200,7 +200,24 @@ export class Tablero {
 
   /** Lo contrario de toJSON: el MISMO tablero (columnas, ids y límite WIP). Lanza si no encaja. */
   static desdeJSON(datos) {
-    throw new Error("Sin hacer");
+    //si los datos son null o la versión no coincide, lanzo un error.
+    if (datos === null || datos.version !== this.VERSION_DATOS) {
+      throw new Error("Datos nop existe o datos.version no es Tablero.VERSION_DATOS");
+    }
+    // empiezo con un tablero vacío que tiene el mismo límite en «En curso» que el guardado.
+    const tablero = new Tablero(datos.limiteEnCurso);
+    // con keys() recorro los nombres de las columnas del Map.
+    for (const nombre of tablero.#columnas.keys()) {
+      // esta es la columna del tablero nuevo donde voy a meter las tareas.
+      const columna = tablero.columna(nombre);
+      // si nombre vale «En curso», aquí leo la lista guardada en datos.columnas["En curso"].
+      for (const objeto of datos.columnas[nombre]) {
+        // con desdeDatos recupero la tarea con su ID y la añado a la columna que le toca.
+        const tarea = desdeDatos(objeto)
+        columna.añadir(tarea)
+      }
+    }
+    return tablero
   }
 }
 
