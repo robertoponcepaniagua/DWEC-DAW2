@@ -20,7 +20,7 @@ export async function obtenerJSON(url, fetchFn = fetch) {
   // Si la cabecera content-type no incluye
   if (!tipo?.includes("application/json")) {
     // lanzamos un error con la url (cuado en la url se esperaba un json)
-    throw new Error(`Url invalida, se esperaba un json (url): ${url}`)
+    throw new Error(`Url invalida, se esperaba un JSON (url): ${url}`)
   }
 
   // si pasa todo, devolvemos respuesta.json()
