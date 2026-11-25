@@ -27,5 +27,12 @@ export function aDatos(tarea) {
 // ✍️ C1 · desdeDatos(datos) → lo contrario de aDatos: TareaRecurrente si trae cadaDias, Tarea si no
 //   (cada campo a su sitio en el constructor, también el id)
 export function desdeDatos(datos) {
-  throw new Error("Sin hacer");
+  // recibe datos y devuelve una instacia de la clase a la que le pertenece los datos, es decir si tiene cadadias es una tareaREcurrente si no es una tarea normal
+  if (Object.hasOwn(datos, "cadaDias")) {
+    // si tiene cada días es una tareaREcurrente
+    return new TareaRecurrente(datos.titulo, datos.prioridad, datos.limite, datos.cadaDias, datos.id)
+  } else {
+    // si no tiene cada días es una tarea
+    return new Tarea(datos.titulo, datos.prioridad, datos.limite, datos.id)
+  }
 }

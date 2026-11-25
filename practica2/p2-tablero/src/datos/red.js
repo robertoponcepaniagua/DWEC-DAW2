@@ -8,5 +8,21 @@
 //   - Si todo va bien, devuelve respuesta.json()
 //   - Los errores de red (sin conexión) NO se capturan aquí: que le lleguen a quien llama
 export async function obtenerJSON(url, fetchFn = fetch) {
-  throw new Error("Sin hacer");
+  const respuesta = await fetchFn(url)
+  // si la respuesta no es ok lanza error dando el status y la url 
+  if (!respuesta.ok) {
+    throw new Error(` Respuesta: ${respuesta.status} | URL: ${url}`)
+  }
+
+  // lee la cabecera respuesta.headers(cabecera).get(conseguir)("content-type") en vez de content-type se puede sacar más info
+  const tipo = respuesta.headers.get("content-type")
+  
+  // Si la cabecera content-type no incluye
+  if (!tipo?.includes("application/json")) {
+    // lanzamos un error con la url (cuado en la url se esperaba un json)
+    throw new Error(`Url invalida, se esperaba un JSON (url): ${url}`)
+  }
+
+  // si pasa todo, devolvemos respuesta.json()
+  return respuesta.json()
 }
