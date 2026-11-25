@@ -199,7 +199,33 @@ export class Tablero {
   //   JSON.stringify(tablero) lo llama solo. Sin él sale "{}": los # no se ven. Usa aDatos.
 
   toJSON() {
-    // implementar función
+    // creamos un columnaDatos donde guardaremos las tareaDatos
+    const columnaDatos = {}
+    // toJSON es una función que crea los planos para convertir todas las columnas a texto para escribirlas en un fichero json
+    for (const [nombre, columna] of this.#columnas.entries()) {
+      // obtenemos el nombre y la columna
+      // el nombre de la columna la conseguimos con .entries es cómo el items de python que conseguimos la clave y valor para que séa más fácil
+      // creamos un array vacío para guardar los datos de las tareas
+      const tareaDatos = []
+      const tareas = columna.tareas
+      // ya hemos conseguido las tareas de la columna especifica, ahora ya que tenemos la columna en la tarea, tenemos que conseguir sus datos con aDatos() para que se vean los # (privados)
+      for (const tarea of tareas) {
+        // detecta si es tarea normal o tarea recurrente y devuelve un objeto plano (un objeto normal pero todavía sin crear)
+        const texto = aDatos(tarea)
+        tareaDatos.push(texto)
+      }
+      columnaDatos[nombre] = tareaDatos
+    }
+
+    // cogemos la columna en curso para sacer el límiteWip
+    const columnaEnCurso = this.#columnas.get("En curso")
+
+    // devolvemos un objeto plano para JSON.stringify()
+    return {
+      "version": Tablero.VERSION_DATOS, //obtener el límite
+      "limiteEnCurso": columnaEnCurso.limiteWip, //obtener el límite de la columna
+      "columnas": columnaDatos,
+    }
   }
 
   /** Lo contrario de toJSON: el MISMO tablero (columnas, ids y límite WIP). Lanza si no encaja. */
