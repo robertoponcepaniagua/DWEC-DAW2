@@ -43,7 +43,7 @@ export function pintarLista(contenedor, tareas, hoy = new Date()) {
     contenedor.append(elemento);
     return;
   }
-  
+
   // un for of ya que hay que crear la tarjeta una a una
   for (const tarea of tareas) {
     // Utilizo la función indicada
