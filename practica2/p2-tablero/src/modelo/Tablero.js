@@ -2,7 +2,7 @@
 // En el bloque C volverás aquí para ✍️ C4 (toJSON y desdeJSON).
 // El tablero TIENE tres columnas: es composición, no hereda de nadie.
 import { Columna } from "./Columna.js";
-import { ColumnaLlenaError, ErrorTablero, MovimientoNoPermitidoError } from "./errores.js";
+import { ColumnaLlenaError, MovimientoNoPermitidoError } from "./errores.js";
 import { Tarea } from "./Tarea.js";
 import { TareaRecurrente } from "./TareaRecurrente.js";
 import { aDatos, desdeDatos } from "./serializar.js";
@@ -200,32 +200,32 @@ export class Tablero {
 
   toJSON() {
     // creamos un columnaDatos donde guardaremos las tareaDatos
-    const columnaDatos = {}
+    const columnaDatos = {};
     // toJSON es una función que crea los planos para convertir todas las columnas a texto para escribirlas en un fichero json
     for (const [nombre, columna] of this.#columnas.entries()) {
       // obtenemos el nombre y la columna
       // el nombre de la columna la conseguimos con .entries es cómo el items de python que conseguimos la clave y valor para que séa más fácil
       // creamos un array vacío para guardar los datos de las tareas
-      const tareaDatos = []
-      const tareas = columna.tareas
+      const tareaDatos = [];
+      const tareas = columna.tareas;
       // ya hemos conseguido las tareas de la columna especifica, ahora ya que tenemos la columna en la tarea, tenemos que conseguir sus datos con aDatos() para que se vean los # (privados)
       for (const tarea of tareas) {
         // detecta si es tarea normal o tarea recurrente y devuelve un objeto plano (un objeto normal pero todavía sin crear)
-        const texto = aDatos(tarea)
-        tareaDatos.push(texto)
+        const texto = aDatos(tarea);
+        tareaDatos.push(texto);
       }
-      columnaDatos[nombre] = tareaDatos
+      columnaDatos[nombre] = tareaDatos;
     }
 
     // cogemos la columna en curso para sacer el límiteWip
-    const columnaEnCurso = this.#columnas.get("En curso")
+    const columnaEnCurso = this.#columnas.get("En curso");
 
     // devolvemos un objeto plano para JSON.stringify()
     return {
-      "version": Tablero.VERSION_DATOS, //obtener el límite
-      "limiteEnCurso": columnaEnCurso.limiteWip, //obtener el límite de la columna
-      "columnas": columnaDatos,
-    }
+      version: Tablero.VERSION_DATOS, //obtener el límite
+      limiteEnCurso: columnaEnCurso.limiteWip, //obtener el límite de la columna
+      columnas: columnaDatos,
+    };
   }
 
   /** Lo contrario de toJSON: el MISMO tablero (columnas, ids y límite WIP). Lanza si no encaja. */
@@ -243,11 +243,11 @@ export class Tablero {
       // si nombre vale «En curso», aquí leo la lista guardada en datos.columnas["En curso"].
       for (const objeto of datos.columnas[nombre]) {
         // con desdeDatos recupero la tarea con su ID y la añado a la columna que le toca.
-        const tarea = desdeDatos(objeto)
-        columna.añadir(tarea)
+        const tarea = desdeDatos(objeto);
+        columna.añadir(tarea);
       }
     }
-    return tablero
+    return tablero;
   }
 }
 

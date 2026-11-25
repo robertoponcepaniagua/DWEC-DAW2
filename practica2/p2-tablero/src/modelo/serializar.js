@@ -30,9 +30,15 @@ export function desdeDatos(datos) {
   // recibe datos y devuelve una instacia de la clase a la que le pertenece los datos, es decir si tiene cadadias es una tareaREcurrente si no es una tarea normal
   if (Object.hasOwn(datos, "cadaDias")) {
     // si tiene cada días es una tareaREcurrente
-    return new TareaRecurrente(datos.titulo, datos.prioridad, datos.limite, datos.cadaDias, datos.id)
+    return new TareaRecurrente(
+      datos.titulo,
+      datos.prioridad,
+      datos.limite,
+      datos.cadaDias,
+      datos.id,
+    );
   } else {
     // si no tiene cada días es una tarea
-    return new Tarea(datos.titulo, datos.prioridad, datos.limite, datos.id)
+    return new Tarea(datos.titulo, datos.prioridad, datos.limite, datos.id);
   }
 }

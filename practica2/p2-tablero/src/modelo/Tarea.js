@@ -23,11 +23,11 @@ export class Tarea {
       this.id = Tarea.#siguienteId++;
     } else {
       if (!Number.isInteger(id) || id < 1) {
-        throw new RangeError("Id no valido (entero y positivo)")
+        throw new RangeError("Id no valido (entero y positivo)");
       }
 
       // si la tarea estaba guardada, conserva su ID
-      this.id = id
+      this.id = id;
 
       // si el ID guardado alcanza o supera el contador, adelantamos el contador
       if (id >= Tarea.#siguienteId) {
