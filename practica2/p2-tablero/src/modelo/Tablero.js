@@ -6,6 +6,8 @@ import { ColumnaLlenaError, MovimientoNoPermitidoError } from "./errores.js";
 import { Tarea } from "./Tarea.js";
 import { TareaRecurrente } from "./TareaRecurrente.js";
 import { aDatos, desdeDatos } from "./serializar.js";
+import { TareaConGastos } from "./TareaConGastos.js";
+import { comprobarPaso } from "./TareaConGastos.js"
 
 export class Tablero {
   static COLUMNAS = Object.freeze(["Por hacer", "En curso", "Hecho"]);
@@ -55,19 +57,17 @@ export class Tablero {
   //   y la devuelve. datos es un objeto { titulo, prioridad, limite, cadaDias }: saca cada campo
   //   y pásaselo al constructor, en su orden (new Tarea(datos) NO vale: espera el título)
 
+  // TENGO QUE VOLVER A HACER ESTÁ FUNCIÓN EN LA QUE CREO UNA TAREA TAMBIÉN CON TAREACONGASTOS
   crearTarea(datos) {
-    if (Object.hasOwn(datos, "cadaDias")) {
-      const TareaRecurrenteCreada = new TareaRecurrente(
-        datos.titulo,
-        datos.prioridad,
-        datos.limite,
-        datos.cadaDias,
-      );
-      return this.columna("Por hacer").añadir(TareaRecurrenteCreada);
+    let tarea;
+    if (Object.hasOwn(datos, "presupuesto")) {
+      tarea = new TareaConGastos(datos.titulo, datos.prioridad, datos.limite, datos.presupuesto);
+    } else if (Object.hasOwn(datos, "cadaDias")) {
+      tarea = new TareaRecurrente(datos.titulo, datos.prioridad, datos.limite, datos.cadaDias);
     } else {
-      const TareaCreada = new Tarea(datos.titulo, datos.prioridad, datos.limite);
-      return this.columna("Por hacer").añadir(TareaCreada);
+      tarea = new Tarea(datos.titulo, datos.prioridad, datos.limite);
     }
+    return this.columna("Por hacer").añadir(tarea);
   }
 
   // buscar(id): la tarea, esté en la columna que esté, o null
@@ -94,6 +94,7 @@ export class Tablero {
   // mover(id, destino): Error si no existe la tarea · Error si la columna destino está llena
   //   (¡comprueba ANTES de quitarla de su columna, o se perdería!) · la mueve y la devuelve
 
+  // falta en vmover poner que si el presupuesto es menor que el gasto tenemos que lanzar el error nuevo creado en errores
   mover(id, destino) {
     // COMENATRIOS PARA NO LIARME:
     //  - ID ES NUMBER
@@ -130,6 +131,9 @@ export class Tablero {
     const tarea = columnaOrigen.quitar(id);
 
     columnaDestino.añadir(tarea);
+
+    // comprobamos el paso
+    tarea.comprobarPaso(columnaOrigen, columnaDestino);
 
     return tarea;
   }

@@ -42,3 +42,12 @@ export class MovimientoNoPermitidoError extends ErrorTablero {
     this.hasta = hasta;
   }
 }
+// PRESUPUESTOSUPERADOERROR PARA LA DEFENSA
+// EL ERROR SE LANZA SI SUPERA MÁS LO GASTADO QUE EL PRESUPUESTO
+export class PresupuestoSuperadoError extends ErrorTablero {
+  constructor(gastado, presupuesto) {
+    super(`Gastados ${gastado} € de ${presupuesto} €`);
+    this.gastado = gastado;
+    this.presupuesto = presupuesto;
+  }
+}
