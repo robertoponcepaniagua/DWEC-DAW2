@@ -5,6 +5,8 @@ import { ErrorTablero } from "../modelo/errores.js";
 import { delegar } from "./delegacion.js";
 import { leerFormulario, mostrarErrores } from "./formulario.js";
 import { pintarLista } from "./tarjeta.js";
+import { Tarea } from "../modelo/Tarea.js";
+import { TareaConGastos } from "../modelo/TareaConGastos.js";
 
 /** Botones de cada tarjeta según su columna: [texto, data-accion] */
 const ACCIONES = {
@@ -38,6 +40,39 @@ export function validar(datos) {
   }
 
   return errores;
+}
+
+// defensa funciones  HECHO
+function crearBoton(texto, accion) {
+  const boton = document.createElement("button");
+  boton.type = "button";
+  boton.dataset.accion = accion;
+  boton.textContent = texto;
+  return boton;
+}
+// HECHO
+const crear = (etiqueta, datos) => Object.assign(document.createElement(etiqueta), datos);
+function crearFormulario(tarea) {
+  const form = crear("form", { noValidate: true });
+  form.dataset.form = "urgencia";
+  const etiqueta = crear("label", {
+    textContent: `Urgencia (1 baja, 2 media, 3 alta) de «${tarea.titulo}»`,
+  });
+  etiqueta.append(
+    crear("input", {
+      name: "urgencia",
+      type: "number",
+      value: tarea.peso + 1,
+    }),
+  );
+  const error = crear("p", { className: "error" });
+  error.dataset.errorDe = "urgencia";
+  const enviar = crear("button", {
+    type: "submit",
+    textContent: "Guardar",
+  });
+  form.append(etiqueta, error, enviar, crearBoton("Cancelar", "cancelar"));
+  return form;
 }
 
 /**
@@ -151,6 +186,14 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
     alCambiar(tablero);
   }
 
+  // cerrar() {
+  //   columnas.querySelector("form")?.remove();
+  // }
+
+  // abrir() {
+  //   cerrar();
+  // }
+
   delegar(columnas, "click", "button[data-accion]", (boton) => {
     const accion = boton.dataset.accion;
     const tarjeta = boton.closest(".tarjeta");
@@ -164,6 +207,29 @@ export function iniciarApp(raiz, tablero, { hoy = null, alCambiar = () => {} } =
       cambiar(() => tablero.completar(id));
     }
   });
+
+  // delegar de la defensa 3 BLOQUE B
+  delegar(columnas, "submit", 'form[data-form="urgencia"]', (formulario, evento) => {
+    evento.preventDefault();
+    const tarjeta = formulario.closest(".tarjeta");
+    const id = Number(tarjeta.dataset.id);
+    const tarea = tablero.buscar(id);
+    const valor = formulario.elements.urgencia.value.trim();
+    const urgencia = Number(valor);
+    const errores = {};
+    if (valor === "" || !Number.isInteger(urgencia) || urgencia < 1 || urgencia > 3) {
+      errores.urgencia = "Escribe un número entero de 1 a 3";
+    } else if (urgencia === tarea.peso + 1) {
+      errores.urgencia = "Ya tiene esa urgencia";
+    }
+    mostrarErrores(formulario, errores);
+    if (Object.keys(errores).length > 0) return;
+    cambiar(() => {
+      tablero.mover(id, "En curso");
+      tarea.prioridad = Tarea.PRIORIDADES[urgencia - 1];
+    });
+  });
+
   // ✍️ B6 · submit de `form`: preventDefault, leerFormulario, validar y mostrarErrores. Si hay errores,
   //   no se crea nada. Si no, tablero.crearTarea(datos) (como un cambio más) y form.reset().
   form.addEventListener("submit", (evento) => {

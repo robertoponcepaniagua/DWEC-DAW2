@@ -7,7 +7,7 @@ import { Tarea } from "./Tarea.js";
 import { TareaRecurrente } from "./TareaRecurrente.js";
 import { aDatos, desdeDatos } from "./serializar.js";
 import { TareaConGastos } from "./TareaConGastos.js";
-import { comprobarPaso } from "./TareaConGastos.js"
+import { comprobarPaso } from "./TareaConGastos.js";
 
 export class Tablero {
   static COLUMNAS = Object.freeze(["Por hacer", "En curso", "Hecho"]);
