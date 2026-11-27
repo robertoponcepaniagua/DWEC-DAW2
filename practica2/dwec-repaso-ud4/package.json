@@ -1,0 +1,16 @@
+{
+  "name": "dwec-repaso-ud4",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "DWEC · Repaso de la UD4 para el Parcial 2 (opcional). Todo se lanza con docker compose.",
+  "scripts": {
+    "dev": "vite",
+    "comprobar": "node comprobador/comprobar.mjs",
+    "empezar": "node comprobador/empezar.mjs",
+    "probar": "node comprobador/probar.mjs"
+  },
+  "devDependencies": {
+    "vite": "8.3.4"
+  }
+}
