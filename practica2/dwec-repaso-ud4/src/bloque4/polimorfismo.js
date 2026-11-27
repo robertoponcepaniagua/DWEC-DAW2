@@ -15,7 +15,7 @@ export function describir(r) {
 //        { normal: 50, urgente: 78 }. Sin instanceof, sin if de tipos y sin mirar el constructor:
 //        cada reparación ya sabe su tipo y su total.
 export function facturaPorTipo(reparaciones) {
-  throw new Error("Sin hacer");
+  
 }
 
 // ➕ ✍️ 3 · OPCIONAL, para ir a por nota (no cuenta en el total).

@@ -24,7 +24,12 @@ export function crearAvisador(nombre) {
 // 🪜 1 · ¿Está ESA reparación en la lista? Es la misma si tiene el mismo id, aunque sea otro objeto (una copia).
 //        estaEnLista([{ id: 1 }, { id: 2 }], { id: 2 }) → true
 export function estaEnLista(lista, reparacion) {
-  throw new Error("Sin hacer");
+  for (const objeto of lista) {
+    if (objeto.id === reparacion.id) {
+      return true
+    }
+  }
+  return false
 }
 
 // ✍️ TU TURNO ─────────────────────────────────────────────────────────────────
@@ -33,7 +38,17 @@ export function estaEnLista(lista, reparacion) {
 //        rebajar({ cliente: "Ana", piezas: [{ nombre: "Cadena", precio: 19.99 }] }, 10)
 //          → { cliente: "Ana", piezas: [{ nombre: "Cadena", precio: 17.99 }] }
 export function rebajar(presupuesto, porcentaje) {
-  throw new Error("Sin hacer");
+  // presupuesto contiene un {cliente: "", piezas: [{nombre: "", precio: ""}]}
+  // porcentaje contiene un int
+
+  // let precio_total;
+  // const dicc = {}
+
+  // for (const pieza in presupuesto.piezas) {
+  //   precio_total += pieza.precio
+  // }
+
+  // return precio_total.toFixed(2)
 }
 
 // ➕ ✍️ 2 · OPCIONAL, para ir a por nota (no cuenta en el total).
@@ -42,7 +57,8 @@ export function rebajar(presupuesto, porcentaje) {
 //        Cambiar CUALQUIER cosa de la copia (la marca, la fecha con setDate, las notas) no cambia el original,
 //        y entrada sigue siendo un Date.
 export function copiarFicha(ficha) {
-  throw new Error("Sin hacer");
+  // ficha contiene {cliente: "" , bici: { marca: "" , talla: "" ,}, entrada: Date, notas: [""]}
+  return structuredClone(ficha)
 }
 
 // ➕ ✍️ 3 · OPCIONAL, para ir a por nota (no cuenta en el total).
@@ -50,5 +66,15 @@ export function copiarFicha(ficha) {
 //        reparación, en orden. revisar usa this (cuenta las que lleva en this.hechas), así que no se puede perder.
 //        Con map, en una línea. (apartado 7.7 de la UD4)
 export function revisarTodas(reparaciones, revisor) {
-  throw new Error("Sin hacer");
+  // Debo de devolver un [], el array es reparación pero en orden
+  //  array = []
+  // cuidado con this.hechas
+
+  const array = []
+
+  for (const r of reparaciones) {
+    array.push(revisor.revisar(r))
+  }
+
+  return array
 }
