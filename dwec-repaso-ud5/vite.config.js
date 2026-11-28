@@ -1,4 +1,4 @@
-// vite.config.js — Vite sirve la página de la batería en http://localhost:5173 (dentro de Docker).
+// vite.config.js — Vite sirve las páginas del repaso en http://localhost:5173 (dentro de Docker).
 // No hace falta tocarlo.
 export default {
   server: {

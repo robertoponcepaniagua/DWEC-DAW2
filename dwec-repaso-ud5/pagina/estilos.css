@@ -280,3 +280,16 @@ td button {
 .escenario [aria-invalid="true"] { border: 2px solid var(--mal); }
 .escenario .aviso { background: #fce8e6; color: var(--mal); border: 1px solid var(--mal); border-radius: 6px; padding: 0.4rem 0.7rem; }
 .escenario .vacio { color: var(--suave); font-style: italic; }
+
+/* El menú de la portada y el título del encabezado como enlace */
+.menu-bloques li {
+  margin: 0.5rem 0;
+}
+.menu-bloques small {
+  color: var(--suave);
+  margin-left: 0.5rem;
+}
+header h1 a {
+  color: inherit;
+  text-decoration: none;
+}

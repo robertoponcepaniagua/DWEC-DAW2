@@ -10,7 +10,7 @@ ordenador no se instala nada más).
 docker compose run --rm web npm install            # 1 vez, con internet (happy-dom y Vite)
 docker compose run --rm web npm run comprobar      # todos los bloques (al principio, 5 de 34 en verde: los ejemplos)
 docker compose run --rm web npm run comprobar 3    # solo el bloque 3 (con un 💡 en cada ejercicio y el porqué de cada predicción)
-docker compose up                                  # la página del taller en http://localhost:5173 (Ctrl+C para pararla)
+docker compose up                                  # las páginas de prueba: http://localhost:5173 (Ctrl+C para pararlas)
 ```
 
 1. Lee la explicación de cada bloque en la web de DWEC: **Practicar → 🎯 Repaso Parcial 2 → UD5 · DOM y eventos**.
@@ -21,7 +21,15 @@ docker compose up                                  # la página del taller en ht
 4. El bloque 6 es un **simulacro**: la página del taller ya funciona (`src/bloque6/taller-app.js`) y le tienes que
    añadir «Añadir pieza». El enunciado está al principio del fichero. El comprobador te dice cuántos puntos llevas de 5
    (el punto 6 es opcional).
-5. Para **ver y depurar** tu código: `docker compose up` y abre **http://localhost:5173**. Cada bloque tiene su página
-   de prueba con tus funciones; se recarga sola cada vez que guardas y, con **F12**, puedes ver el HTML cambiar, usar
-   la consola y poner puntos de parada en `src/`.
+5. Para **ver y depurar** tu código: `docker compose up` y abre **http://localhost:5173** (el menú de los 6 bloques).
+   Cada bloque tiene su página de prueba en `src/bloqueN/`, junto a tu fichero:
+   - `index.html`: el HTML real del escenario. Se abre en `http://localhost:5173/src/bloqueN/`.
+   - `prueba.js`: importa tus funciones, las conecta con ese HTML (botones, formularios…) y ejecuta los ejemplos. No
+     se toca, pero se puede leer.
+
+   La página se recarga sola cada vez que guardas. Con **F12**:
+   - **Elements**: el HTML del escenario en vivo; ves cómo lo cambian tus funciones.
+   - **Sources**: abre tu fichero o `prueba.js` (en `src/bloqueN/`) y pon un **punto de parada** pulsando en el número
+     de línea. En `prueba.js` ves con qué datos se llama a tu función.
+   - **Console**: tus funciones, `escenario`, `$("selector")`, `nuevoTaller()` y las clases del modelo.
 6. Al terminar, contesta `respuestas.md`.

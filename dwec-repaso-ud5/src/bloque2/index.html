@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bloque 2 · Crear nodos sin XSS y pintar desde el modelo · Repaso UD5 · Taller La Cadena</title>
+    <link rel="stylesheet" href="/pagina/estilos.css" />
+  </head>
+  <body>
+    <!-- La página de prueba del bloque 2. Es HTML normal: aquí ves el escenario sobre el que trabajan tus funciones.
+         Tu código está en pintar.js; prueba.js lo conecta con este HTML. -->
+    <header>
+      <h1><a href="/">Repaso UD5 para el Parcial 2 · Taller de bicis «La Cadena»</a></h1>
+      <nav id="bloques"></nav>
+    </header>
+    <main id="app">
+      <p class="panel" id="aviso-carga">⏳ Cargando tus funciones… Si este aviso no se va, tu fichero no se puede cargar:
+        mira el recuadro rojo de Vite (fichero y línea; la llave o el paréntesis que sobra suele estar unas líneas ANTES)
+        o la consola (F12). Si Vite marca la línea 1, el fallo está en otro sitio: un paréntesis o unas comillas sin
+        cerrar. Si pone «does not provide an export named …», has quitado o cambiado el <code>export</code> de esa función.</p>
+      <h2 class="titulo-bloque">Bloque 2 · Crear nodos sin XSS y pintar desde el modelo</h2>
+      <div class="panel">
+        <h2>🧩 El escenario</h2>
+        <p>La página de prueba del bloque (este HTML está en src/bloque2/index.html). Úsala con F12 abierto. Lo que hacen tus funciones sale en el registro de abajo.</p>
+        <div class="escenario" id="escenario">
+          <p><button type="button" id="pintar">Pintar el taller</button> <button type="button" id="vaciar">Pintar una lista vacía</button></p>
+          <ul id="reparaciones"></ul>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="./prueba.js"></script>
+  </body>
+</html>

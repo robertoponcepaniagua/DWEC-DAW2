@@ -23,19 +23,31 @@ export function clientes(raiz, estado) {
 // 🪜 ESCALERA ──────────────────────────────────────────────────────────────────
 // 🪜 1 · Cuántas reparaciones urgentes hay (las que tienen la clase urgente).
 export function contarUrgentes(raiz) {
-  throw new Error("Sin hacer");
+  const total = raiz.querySelectorAll(".urgente")
+  return total.length
 }
 
 // 🪜 2 · Desde CUALQUIER elemento de dentro de una tarjeta (el botón, el span del botón, el h3…),
 //        el id de su reparación, como NÚMERO. Si el elemento no está dentro de ninguna tarjeta, null.
 export function idDe(elemento) {
-  throw new Error("Sin hacer");
+  const reparacion = elemento.closest(".reparacion")
+  if (reparacion === null) {
+    return null
+  }
+  return Number(reparacion.dataset.id)
 }
 
 // ✍️ TU TURNO ─────────────────────────────────────────────────────────────────
 // ✍️ 1 · La suma de las horas (data-horas) de las reparaciones «pendiente». Con la página de ejemplo, 2.5.
 export function horasPendientes(raiz) {
-  throw new Error("Sin hacer");
+  // con esto tengo el dom de todos los pendientes
+  const pendientes = raiz.querySelectorAll(".reparacion.estado-pendiente")
+  // ahora de los pendientes tengo que sacar el data-horas por separado
+  let horas = 0
+  for (const pendiente of pendientes) {
+    horas += Number(pendiente.dataset.horas)
+  }
+  return horas
 }
 
 // ✍️ 2 · Cambia el estado de una tarjeta y devuelve el que tenía.
@@ -43,12 +55,54 @@ export function horasPendientes(raiz) {
 //        - de las clases estado-pendiente, estado-en-taller y estado-lista, solo queda la del estado nuevo;
 //        - las demás clases (reparacion, urgente…) no se tocan.
 //        marcarEstado(tarjeta, "lista") → "pendiente"   (si la tarjeta estaba pendiente)
+
 export function marcarEstado(tarjeta, estado) {
-  throw new Error("Sin hacer");
+  // en la tarjeta que nos pasan guardamos el estado que tenía para después devolverlo
+  // antes de devolver el estado viejo hay que cambiar el viejo por el nuevo
+  const estado_antes = tarjeta.dataset.estado
+  // ya tengo el estado anterior
+  tarjeta.dataset.estado = estado
+
+  // las clases estado-pendiente, estado-en-taller y estado-lista hay que eliminarlas o por lo menos eso he entendido
+  tarjeta.classList.remove("estado-pendiente", "estado-en-taller", "estado-lista")
+
+  // añadir nueva clase de estado
+  tarjeta.classList.add(`estado-${estado}`)
+
+  // devolver estado anterior
+  return estado_antes
 }
 
 // ➕ OPCIONAL (para ir a por nota) · Recorre el árbol hacia abajo: el id (número) de la SIGUIENTE tarjeta que tiene el mismo estado
 //        que esta, o null si no hay ninguna más abajo. Solo mira las que van después, no las de antes.
 export function siguienteIgual(tarjeta) {
-  throw new Error("Sin hacer");
+  // para recorrer el árbol hacía abajo es con querySelector, hacía arriba es con closest
+  // para buscar elementos que coinciden en tener el mismo data-estado por ejemplo se puede utilizar nextElementSibling
+
+  // nextElementSibling sirve para buscar los hermanos por así decirlo
+
+  // guardamos el estado de la tarjeta recibida
+  const estado_tarjeta_recibida = tarjeta.dataset.estado
+
+  // buscamos los hermamos de la tarjeta
+  // declaramos con let porque pueden haber más tarjetas hermanas
+  let tarjeta_hermana = tarjeta.nextElementSibling
+
+  // cuando no quedan más nextElementSibling devuelve null, voy a utilizar un bucle while tarjeta_hermana != null, si da null para
+  while (tarjeta_hermana !== null) {
+    // obtenemos el primer hermano
+    let tarjeta_hermana = tarjeta.nextElementSibling;
+    // recorremos los hermanos mientras existan
+    while (tarjeta_hermana !== null) {
+        const estado_tarjeta_hermana = tarjeta_hermana.dataset.estado;
+        // si tienen el mismo estado, devolvemos su ID
+        if (estado_tarjeta_hermana === estado_tarjeta_recibida) {
+            return Number(tarjeta_hermana.dataset.id);
+        }
+        // avanzamos al siguiente hermano
+        tarjeta_hermana = tarjeta_hermana.nextElementSibling;
+    }
+    // no hemos encontrado ninguna coincidencia
+    return null;
+  }
 }

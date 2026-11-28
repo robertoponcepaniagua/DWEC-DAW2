@@ -20,7 +20,12 @@ export function vigilar(boton, salida) {
 // 🪜 1 · La PRIMERA vez que se pulse el botón, llama a accion(id) con el data-id del botón como número.
 //        Las siguientes veces, nada.   <button data-id="7">  →  accion(7), una sola vez
 export function soloUnaVez(boton, accion) {
-  throw new Error("Sin hacer");
+  // para que solo se ejecute una vez podemos quitarle la clase que se llama una vez
+  boton.addEventListener("click", () => {
+    const boton_id = Number(boton.dataset.id)
+    accion(boton_id)
+    // once para que solo sea una vez
+  }, { once: true })
 }
 
 // 🪜 2 · En el campo de las horas (<input type="number">), con el teclado:
@@ -30,7 +35,20 @@ export function soloUnaVez(boton, accion) {
 //        - con cualquier otra tecla, nada.
 //        Si pone "2" → ArrowUp → "2.5".
 export function flechasHoras(campo) {
-  throw new Error("Sin hacer");
+  campo.addEventListener("keydown", (e) => {
+    let campo_value = Number(campo.value)
+    if (e.key === "ArrowUp") {
+      e.preventDefault()
+      // sumamos
+      campo_value += 0.5
+      campo.value = campo_value
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault()
+      // restamos
+      campo_value = Math.max(0.5, campo_value - 0.5);
+      campo.value = campo_value
+    }
+  })
 }
 
 // ✍️ TU TURNO ─────────────────────────────────────────────────────────────────
@@ -42,20 +60,30 @@ export function flechasHoras(campo) {
 //        desconectar(): a partir de ahí, los clics ya no suman.
 //        Cuidado con `this` dentro del listener, y con qué función le das a removeEventListener.
 export class MarcadorHoras {
+  #horas
+  #manegador
   constructor(boton, salida) {
-    throw new Error("Sin hacer");
+    this.boton = boton
+    this.salida = salida
+    this.#horas = 0
+
+    this.#manegador = () => {
+      this.sumar(Number(boton.dataset.paso))
+    }
+    this.boton.addEventListener("click", this.#manegador)
   }
 
   sumar(paso) {
-    throw new Error("Sin hacer");
+    this.#horas += paso
+    this.salida.textContent = `${this.#horas} h`
   }
 
   get horas() {
-    throw new Error("Sin hacer");
+    return this.#horas
   }
 
   desconectar() {
-    throw new Error("Sin hacer");
+    this.boton.removeEventListener("click", this.#manegador)
   }
 }
 
@@ -65,5 +93,19 @@ export class MarcadorHoras {
 //        - «Escape» → acciones.cerrar(), esté donde esté el foco (también dentro de un campo).
 //        Devuelve una función que quita los atajos.
 export function atajos(raiz, acciones) {
-  throw new Error("Sin hacer");
+  const manegador = (e) => {
+    if (e.key === "n") {
+      if (!e.ctrlKey) {
+        if (e.target.tagName !== "TEXTAREA" && e.target.tagName !== "INPUT") {
+          acciones.nueva()
+        }
+      }
+    }
+    if (e.key === "Escape") {
+      acciones.cerrar()
+    }
+  };
+  raiz.addEventListener("keydown", manegador)
+  // se devuelve con una función felcha para que se pueda acceder al manejador
+  return () => raiz.removeEventListener("keydown", manegador)
 }

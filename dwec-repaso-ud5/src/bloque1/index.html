@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bloque 1 · Seleccionar, leer y modificar · Repaso UD5 · Taller La Cadena</title>
+    <link rel="stylesheet" href="/pagina/estilos.css" />
+  </head>
+  <body>
+    <!-- La página de prueba del bloque 1. Es HTML normal: aquí ves el escenario sobre el que trabajan tus funciones.
+         Tu código está en leer.js; prueba.js lo conecta con este HTML. -->
+    <header>
+      <h1><a href="/">Repaso UD5 para el Parcial 2 · Taller de bicis «La Cadena»</a></h1>
+      <nav id="bloques"></nav>
+    </header>
+    <main id="app">
+      <p class="panel" id="aviso-carga">⏳ Cargando tus funciones… Si este aviso no se va, tu fichero no se puede cargar:
+        mira el recuadro rojo de Vite (fichero y línea; la llave o el paréntesis que sobra suele estar unas líneas ANTES)
+        o la consola (F12). Si Vite marca la línea 1, el fallo está en otro sitio: un paréntesis o unas comillas sin
+        cerrar. Si pone «does not provide an export named …», has quitado o cambiado el <code>export</code> de esa función.</p>
+      <h2 class="titulo-bloque">Bloque 1 · Seleccionar, leer y modificar</h2>
+      <div class="panel">
+        <h2>🧩 El escenario</h2>
+        <p>La página de prueba del bloque (este HTML está en src/bloque1/index.html). Úsala con F12 abierto. Lo que hacen tus funciones sale en el registro de abajo.</p>
+        <div class="escenario" id="escenario">
+          <ul id="reparaciones">
+            <li class="reparacion estado-pendiente" data-id="1" data-estado="pendiente" data-horas="2"><h3 class="cliente">Ana</h3><p class="bici">Orbea Alma</p><button type="button" data-accion="empezar"><span class="icono">🔧</span> Empezar</button></li>
+            <li class="reparacion urgente estado-en-taller" data-id="2" data-estado="en-taller" data-horas="1.5"><h3 class="cliente">Luis</h3><p class="bici">BH Ultimate</p><button type="button" data-accion="terminar"><span class="icono">✅</span> Terminar</button></li>
+            <li class="reparacion estado-lista" data-id="3" data-estado="lista" data-horas="3"><h3 class="cliente">Marta</h3><p class="bici">Trek Marlin</p></li>
+            <li class="reparacion urgente estado-pendiente" data-id="4" data-estado="pendiente" data-horas="0.5"><h3 class="cliente">Sergio</h3><p class="bici">Canyon Grail</p><button type="button" data-accion="empezar"><span class="icono">🔧</span> Empezar</button></li>
+            <li class="reparacion estado-en-taller" data-id="5" data-estado="en-taller" data-horas="4"><h3 class="cliente">Eva</h3><p class="bici">Giant Talon</p><button type="button" data-accion="terminar"><span class="icono">✅</span> Terminar</button></li>
+          </ul>
+          <aside id="lateral"><p>Horario: de 9 a 14</p></aside>
+          <p><small>Pulsa en cualquier sitio de una tarjeta: el registro enseña lo que dan TUS idDe y siguienteIgual.</small></p>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="./prueba.js"></script>
+  </body>
+</html>

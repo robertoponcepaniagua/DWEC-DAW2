@@ -31,7 +31,15 @@ export function crearBoton(accion, icono, texto) {
 // 🪜 ESCALERA ──────────────────────────────────────────────────────────────────
 // 🪜 1 · Un párrafo con esa clase y ese texto: crearDato("bici", "Orbea") → <p class="bici">Orbea</p>
 export function crearDato(clase, texto) {
-  throw new Error("Sin hacer");
+  // creamos el parrafo con document.createElemet
+  const p = document.createElement("p")
+  // le añadimos la clase bici
+  p.classList.add(clase)
+  // le cambiamos el texto
+  p.textContent = texto
+
+  // devolvemos el html
+  return p
 }
 
 // ✍️ TU TURNO ─────────────────────────────────────────────────────────────────
@@ -45,7 +53,69 @@ export function crearDato(clase, texto) {
 //            «lista»     → ninguno
 //        ¡Ojo! El cliente y la bici los escribe la gente en un formulario: nada de innerHTML con ellos.
 export function crearTarjeta(reparacion) {
-  throw new Error("Sin hacer");
+  // reparación es una clase, viene explicado al principio del fichero
+    
+  // guardamos todos los datos para convertirlo a html
+  const reparacion_estado = reparacion.estado
+  const reparacion_tipo = reparacion.tipo
+  const reparacion_id = reparacion.id
+  const reparacion_cliente = reparacion.cliente
+  const reparacion_bici = reparacion.bici
+  const reparacion_total = reparacion.total
+
+  // creamos el li
+  const li = document.createElement("li")
+
+  li.classList.add("reparacion", `estado-${reparacion_estado}`)
+
+    li.dataset.id = reparacion_id
+    li.dataset.estado = reparacion_estado
+
+  // si reparación es urgente:
+  if (reparacion_tipo === "urgente") {
+    // añadimos la clase urgente
+    li.classList.add("urgente")
+  }
+
+  // creamos el h3
+  const h3 = document.createElement("h3")
+  h3.classList.add("cliente")
+  h3.textContent = reparacion_cliente
+  // lo metemos dentro de li
+  li.append(h3)
+
+  // Creamos el párrafo de la bicicleta
+  const p_bici = document.createElement("p");
+  p_bici.classList.add("bici");
+  p_bici.textContent = reparacion_bici;
+  li.append(p_bici);
+
+  // Creamos el párrafo del tipo
+  const p_tipo = document.createElement("p");
+  p_tipo.classList.add("tipo");
+  p_tipo.textContent = reparacion_tipo;
+  li.append(p_tipo);
+
+  // Creamos el párrafo del total
+  const p_total = document.createElement("p");
+  p_total.classList.add("total");
+  p_total.textContent = `${reparacion_total.toFixed(2)} €`;
+  li.append(p_total);
+
+  // Creamos el párrafo del estado
+  const p_estado = document.createElement("p");
+  p_estado.classList.add("estado");
+  p_estado.textContent = reparacion_estado;
+  li.append(p_estado);
+
+  if (reparacion_estado === "pendiente") {
+    const button = crearBoton("empezar", "🔧", "Empezar")
+    li.append(button)
+  } else if (reparacion_estado === "en-taller") {
+    const button = crearBoton("terminar", "✅", "Terminar")
+    li.append(button)
+  }
+  return li
 }
 
 // ✍️ 2 · Pinta la lista desde el modelo. Cada vez que se llama, la lista queda SOLO con estas tarjetas
@@ -55,5 +125,51 @@ export function crearTarjeta(reparacion) {
 //        No cambies el array que te pasan (puede ser el del taller). Si está vacío, la lista tiene un
 //        único <li class="vacio">No hay reparaciones</li>.
 export function pintarLista(lista, reparaciones) {
-  throw new Error("Sin hacer");
+
+  // ordenamos la lista antes de meterlo en la lista
+
+  const repraciones_ordenadas = [...reparaciones].sort((a, b) => {
+    // sacamos los tipos de los 2
+    const a_tipo = a.tipo
+    const b_tipo = b.tipo 
+
+    const a_fecha = a.entrada
+    const b_fecha = b.entrada
+
+    // si los tipos son iguales también comparamos por la fecha
+    if (a.tipo === b.tipo) {
+      if (a.fecha < b.fecha) {
+        return -1
+      } else if (b.fecha < a.fecha) {
+        return 1
+      } else {
+        return 0
+      }
+    } else {
+      // si los tipos no son iguales miramos cual es el tipo más urgente
+
+      if (a.tipo === "urgente") {
+        return -1
+      } else {
+        return 1
+      }
+    }
+  })
+
+
+  // si la lista de reparaciones está vacía hacemos lo que nos piden
+  if (reparaciones.length === 0) {
+    const li = document.createElement("li")
+    li.classList.add("vacio")
+    li.textContent = "No hay reparaciones";
+    lista.append(li)
+    return lista
+  }
+
+  for (const reparacion of repraciones_ordenadas) {
+    const tarjeta = crearTarjeta(reparacion)
+    lista.append(tarjeta)
+  }
+
+  return lista
 }

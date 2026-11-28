@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bloque 5 · Formularios · Repaso UD5 · Taller La Cadena</title>
+    <link rel="stylesheet" href="/pagina/estilos.css" />
+  </head>
+  <body>
+    <!-- La página de prueba del bloque 5. Es HTML normal: aquí ves el escenario sobre el que trabajan tus funciones.
+         Tu código está en formulario.js; prueba.js lo conecta con este HTML. -->
+    <header>
+      <h1><a href="/">Repaso UD5 para el Parcial 2 · Taller de bicis «La Cadena»</a></h1>
+      <nav id="bloques"></nav>
+    </header>
+    <main id="app">
+      <p class="panel" id="aviso-carga">⏳ Cargando tus funciones… Si este aviso no se va, tu fichero no se puede cargar:
+        mira el recuadro rojo de Vite (fichero y línea; la llave o el paréntesis que sobra suele estar unas líneas ANTES)
+        o la consola (F12). Si Vite marca la línea 1, el fallo está en otro sitio: un paréntesis o unas comillas sin
+        cerrar. Si pone «does not provide an export named …», has quitado o cambiado el <code>export</code> de esa función.</p>
+      <h2 class="titulo-bloque">Bloque 5 · Formularios</h2>
+      <div class="panel">
+        <h2>🧩 El escenario</h2>
+        <p>La página de prueba del bloque (este HTML está en src/bloque5/index.html). Úsala con F12 abierto. Lo que hacen tus funciones sale en el registro de abajo.</p>
+        <div class="escenario" id="escenario">
+          <form id="alta" novalidate>
+            <label>Cliente <input name="cliente"></label><p class="error" data-error-de="cliente"></p>
+            <label>Bici <input name="bici"></label><p class="error" data-error-de="bici"></p>
+            <label>Horas <input name="horas" type="number" step="0.5"></label><p class="error" data-error-de="horas"></p>
+            <label><input type="checkbox" name="urgente"> Urgente</label>
+            <button>Dar de alta</button>
+          </form>
+          <p>Horas de la reparación de Ana: <span class="horas">2 h</span> <button type="button" id="editar">Editar</button> <small>(Enter guarda, Escape cancela)</small></p>
+          <p><small>Prueba a enviar vacío, con horas «2.3» o «0». Al dar de alta bien, alCambiar sale en el registro.</small></p>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="./prueba.js"></script>
+  </body>
+</html>

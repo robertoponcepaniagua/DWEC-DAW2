@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bloque 3 · Listeners y el objeto evento · Repaso UD5 · Taller La Cadena</title>
+    <link rel="stylesheet" href="/pagina/estilos.css" />
+  </head>
+  <body>
+    <!-- La página de prueba del bloque 3. Es HTML normal: aquí ves el escenario sobre el que trabajan tus funciones.
+         Tu código está en listeners.js; prueba.js lo conecta con este HTML. -->
+    <header>
+      <h1><a href="/">Repaso UD5 para el Parcial 2 · Taller de bicis «La Cadena»</a></h1>
+      <nav id="bloques"></nav>
+    </header>
+    <main id="app">
+      <p class="panel" id="aviso-carga">⏳ Cargando tus funciones… Si este aviso no se va, tu fichero no se puede cargar:
+        mira el recuadro rojo de Vite (fichero y línea; la llave o el paréntesis que sobra suele estar unas líneas ANTES)
+        o la consola (F12). Si Vite marca la línea 1, el fallo está en otro sitio: un paréntesis o unas comillas sin
+        cerrar. Si pone «does not provide an export named …», has quitado o cambiado el <code>export</code> de esa función.</p>
+      <h2 class="titulo-bloque">Bloque 3 · Listeners y el objeto evento</h2>
+      <div class="panel">
+        <h2>🧩 El escenario</h2>
+        <p>La página de prueba del bloque (este HTML está en src/bloque3/index.html). Úsala con F12 abierto. Lo que hacen tus funciones sale en el registro de abajo.</p>
+        <!-- tabindex="-1": así el escenario recibe el foco al pinchar en él y le llegan las teclas -->
+        <div class="escenario" id="escenario" tabindex="-1">
+          <p><button type="button" class="vigilado" data-accion="empezar"><span>🔧</span> Empezar (vigilado)</button> <output class="salida-vigilar"></output></p>
+          <p><button type="button" class="una-vez" data-id="7">Solo la primera vez</button></p>
+          <p><label>Horas (flechas ↑ ↓) <input class="horas" type="number" step="0.5" value="2"></label></p>
+          <p><button type="button" class="marcador" data-paso="0.5">+½ h</button> <output class="salida-marcador">0 h</output> <button type="button" class="desconectar">desconectar()</button></p>
+          <p><label>Escribe aquí (prueba «n» dentro y fuera del campo, y Escape) <input class="nota"></label></p>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="./prueba.js"></script>
+  </body>
+</html>

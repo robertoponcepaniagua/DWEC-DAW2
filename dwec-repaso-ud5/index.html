@@ -7,12 +7,25 @@
     <link rel="stylesheet" href="/pagina/estilos.css" />
   </head>
   <body>
-    <!-- La página del repaso: prueba y depura TU código en el navegador. No hace falta tocarla. -->
     <header>
       <h1>Repaso UD5 para el Parcial 2 · Taller de bicis «La Cadena»</h1>
-      <nav id="bloques"></nav>
     </header>
-    <main id="app"></main>
-    <script type="module" src="/pagina/app.js"></script>
+    <main>
+      <div class="panel">
+        <h2>Elige un bloque</h2>
+        <p>Cada bloque tiene su página de prueba en su carpeta: <code>index.html</code> (el HTML del escenario) y
+          <code>prueba.js</code> (conecta tus funciones con ese HTML y ejecuta los ejemplos). Lo tuyo es el otro fichero.</p>
+        <ul class="menu-bloques">
+        <li><a href="/src/bloque1/">Bloque 1 · Seleccionar, leer y modificar</a> <small>src/bloque1/ · tu código: leer.js</small></li>
+        <li><a href="/src/bloque2/">Bloque 2 · Crear nodos sin XSS y pintar desde el modelo</a> <small>src/bloque2/ · tu código: pintar.js</small></li>
+        <li><a href="/src/bloque3/">Bloque 3 · Listeners y el objeto evento</a> <small>src/bloque3/ · tu código: listeners.js</small></li>
+        <li><a href="/src/bloque4/">Bloque 4 · Propagación y delegación</a> <small>src/bloque4/ · tu código: delegacion.js</small></li>
+        <li><a href="/src/bloque5/">Bloque 5 · Formularios</a> <small>src/bloque5/ · tu código: formulario.js</small></li>
+        <li><a href="/src/bloque6/">Bloque 6 · Simulacro: «Añadir pieza»</a> <small>src/bloque6/ · tu código: taller-app.js</small></li>
+        </ul>
+        <p><small>Se recarga sola cada vez que guardas. Comprueba un bloque con
+          <code>docker compose run --rm web npm run comprobar N</code>.</small></p>
+      </div>
+    </main>
   </body>
 </html>
