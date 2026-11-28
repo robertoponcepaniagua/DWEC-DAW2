@@ -12,7 +12,11 @@ export function esperar(ms) {
 // 🪜 1 · Una promesa que, pasados `ms` milisegundos, se cumple con el texto del aviso de recogida:
 //        avisoDeRecogida({ cliente: "Ana", bici: "BH" }, 50) → (a los 50 ms) "Ana: tu BH está lista"
 export function avisoDeRecogida(reparacion, ms) {
-  throw new Error("Sin hacer");
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(`${reparacion.cliente}: tu ${reparacion.bici} está lista`)
+    }, ms)
+  })
 }
 
 // ✍️ TU TURNO ─────────────────────────────────────────────────────────────────
@@ -21,7 +25,20 @@ export function avisoDeRecogida(reparacion, ms) {
 //        han salido (que no tiene por qué ser el del array).
 //        programarAvisos([{ ms: 60, texto: "B" }, { ms: 20, texto: "A" }]) → escribe A, luego B → se cumple con ["A", "B"]
 export function programarAvisos(avisos) {
-  throw new Error("Sin hacer");
+  const antes = []
+  const despues = []
+
+  for (const aviso of avisos) {
+    antes.push(new Promise((resolve) => 
+    setTimeout(() => {
+      despues.push(aviso.texto) //metemos en después las promesas
+      resolve() //resolvemos las promesas
+    },aviso.ms)))
+  }
+
+  // Esperamos a que TODAS las promesas se cumplan.
+   // Cuando terminan, devolvemos el array de textos.
+  return Promise.all(antes).then(() => despues)
 }
 
 // ✍️ 2 · Un aviso que se puede cancelar. Devuelve un objeto { promesa, cancelar }:
@@ -29,5 +46,24 @@ export function programarAvisos(avisos) {
 //        - cancelar(): para el temporizador (clearTimeout) y la promesa se RECHAZA con new Error("Cancelado").
 //          Si ya se había cumplido, cancelar() no hace nada.
 export function cancelable(ms, valor) {
-  throw new Error("Sin hacer");
+  let temporizador;
+  let rechazar;
+  const promesa = new Promise((resolve, reject) => {
+    // guardamos el identidicador del temporizador
+    rechazar = reject
+    temporizador = setTimeout(() => {
+      resolve(valor)
+    }, ms)
+  })
+  return {
+    "promesa": promesa,
+    "cancelar": () => {
+      if (temporizador !== ms) {
+        // le quitamos el tiempo
+        clearTimeout(temporizador)
+        //la rechazamos
+        reject(rechazar);
+      }
+    }
+  }  
 }

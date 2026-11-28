@@ -26,7 +26,15 @@ export function elegirAlPulsar(lista) {
 //        enlace). El clic tiene que seguir subiendo: hay otros listeners más arriba que lo necesitan.
 //        Los enlaces sin data-interno, como siempre.
 export function enlacesInternos(raiz) {
-  throw new Error("Sin hacer");
+  raiz.addEventListener("click", (e) => {
+    // tengo que mirar si tiene data-interno si la tiene no tiene por qué navegar, si no la tiene navegamos
+    // buscamos el enlace que estamos buscando en eñ que contiene el dataset para saber si se puede pulsar o no se puede pulsars
+    const a = e.target.closest("a[data-interno]")
+
+    if (a) {
+      e.preventDefault()
+    }
+  })
 }
 
 // ✍️ TU TURNO ─────────────────────────────────────────────────────────────────
